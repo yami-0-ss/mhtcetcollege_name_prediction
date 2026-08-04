@@ -174,8 +174,8 @@ with st.sidebar:
 
     st.header("📋 Candidate Details")
 
-    merit_no = st.number_input("Merit Number", min_value=1, value=1000, step=1)
-    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=51.94, step=0.01)
+    merit_no = st.number_input("Merit Number", min_value=1, value=2000, step=1)
+    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=58.00, step=0.01)
 
     if loaded_assets:
         model, gender_encoder, category_encoder, seat_encoder, target_encoder = loaded_assets
@@ -267,7 +267,7 @@ if predict_btn:
                 with res_col1:
                     st.markdown(f"""
                         <div class="result-card-inst">
-                            <div class="result-header">🎓 Predicted Institute</div>
+                            <div class="result-header">🎓 PREDICTED INSTITUTE</div>
                             <div class="result-title">{institute}</div>
                         </div>
                     """, unsafe_allow_html=True)
@@ -275,7 +275,7 @@ if predict_btn:
                 with res_col2:
                     st.markdown(f"""
                         <div class="result-card-course">
-                            <div class="result-header">📚 Predicted Course</div>
+                            <div class="result-header">📚 PREDICTED COURSE</div>
                             <div class="result-title">{course}</div>
                         </div>
                     """, unsafe_allow_html=True)
