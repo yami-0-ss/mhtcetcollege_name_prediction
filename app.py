@@ -1,3 +1,41 @@
+import joblib
+import pandas as pd
+
+# Load CSV
+df = pd.read_csv("CAP_Seat_Allocation_short_2.csv")
+df['Target'] = df['Institute Name'].astype(str) + " | " + df['Course Name'].astype(str)
+
+# Sort unique targets alphabetically as fitted by LabelEncoder
+unique_targets = sorted(df['Target'].unique())
+
+print(f"Total Unique Targets: {len(unique_targets)}")
+for idx, target in enumerate(unique_targets):
+    sub = df[df['Target'] == target]
+    p_min = sub['MHTCET Percentile'].min()
+    p_max = sub['MHTCET Percentile'].max()
+    print(f"{idx}: '{target}' (Percentile Range: {p_min:.2f}% - {p_max:.2f}%)")
+
+import os
+import pandas as pd
+
+# Check files in working directory
+files = os.listdir('.')
+csv_files = [f for f in files if f.endswith('.csv')]
+print("CSV Files found:", csv_files)
+
+# Find the uploaded CSV file name
+for csv in csv_files:
+    df = pd.read_csv(csv)
+    if 'Institute Name' in df.columns:
+        df['Target'] = df['Institute Name'].astype(str) + " | " + df['Course Name'].astype(str)
+        unique_targets = sorted(df['Target'].unique())
+        print(f"\n--- Mapping for {csv} ({len(unique_targets)} Classes) ---")
+        for idx, target in enumerate(unique_targets):
+            sub = df[df['Target'] == target]
+            p_min = sub['MHTCET Percentile'].min()
+            p_max = sub['MHTCET Percentile'].max()
+            print(f"    {idx}: \"{target}\",  # %ile: {p_min:.2f}% - {p_max:.2f}%")
+
 import os
 import joblib
 import pandas as pd
