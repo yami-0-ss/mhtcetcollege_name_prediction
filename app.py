@@ -5,27 +5,21 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# Define base directory to ensure proper path resolution
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def load_pickle_file(filename):
-    """Utility function to safely load pickle/joblib files."""
+    """Utility to safely load pickle/joblib files from the project directory."""
     file_path = os.path.join(BASE_DIR, filename)
     if os.path.exists(file_path):
         return joblib.load(file_path)
     return None
 
-# Load the trained ML model and encoders
-try:
-    model = load_pickle_file("collegename_model.pkl")
-    gender_encoder = load_pickle_file("gender_encoder.pkl")
-    category_encoder = load_pickle_file("category_encoder.pkl")
-    seat_encoder = load_pickle_file("seat_encoder.pkl")
-    target_encoder = load_pickle_file("target_encoder.pkl")
-    print("Model and Encoders loaded successfully.")
-except Exception as e:
-    print(f"Error loading model files: {e}")
-    model = None
+# Load your specific model and label encoders
+model = load_pickle_file("collegename_model.pkl")
+gender_encoder = load_pickle_file("gender_encoder.pkl")
+category_encoder = load_pickle_file("category_encoder.pkl")
+seat_encoder = load_pickle_file("seat_encoder.pkl")
+target_encoder = load_pickle_file("target_encoder.pkl")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -35,60 +29,54 @@ def index():
 
     if request.method == "POST":
         try:
-            # Check if all required files are loaded
-            if not all([model, gender_encoder, category_encoder, seat_encoder, target_encoder]):
-                raise ValueError("Model files are missing on the server. Please contact support.")
+            # 1. Verify all .pkl files loaded successfully
+            missing_files = []
+            if model is None: missing_files.append("collegename_model.pkl")
+            if gender_encoder is None: missing_files.append("gender_encoder.pkl")
+            if category_encoder is None: missing_files.append("category_encoder.pkl")
+            if seat_encoder is None: missing_files.append("seat_encoder.pkl")
+            if target_encoder is None: missing_files.append("target_encoder.pkl")
 
-            # Form Input Extraction
+            if missing_files:
+                raise ValueError(f"Missing model/encoder file(s): {', '.join(missing_files)}. Please make sure they exist in the root folder.")
+
+            # 2. Extract inputs from the HTML form
             merit_number = request.form.get("merit_number", "").strip()
             percentile = request.form.get("percentile", "").strip()
             gender = request.form.get("gender", "").strip()
             category = request.form.get("category", "").strip()
             seat_alloted = request.form.get("seat_alloted", "").strip()
 
-            # Input Validations
-            if not merit_number or not percentile or not gender or not category or not seat_alloted:
-                raise ValueError("All fields are required. Please fill out the form completely.")
+            if not all([merit_number, percentile, gender, category, seat_alloted]):
+                raise ValueError("All form fields are required.")
 
-            try:
-                merit_number = float(merit_number)
-            except ValueError:
-                raise ValueError("Merit Number must be a valid number.")
+            percentile_val = float(percentile)
 
-            try:
-                percentile = float(percentile)
-                if not (0 <= percentile <= 100):
-                    raise ValueError("MHTCET Percentile must be between 0 and 100.")
-            except ValueError:
-                raise ValueError("MHTCET Percentile must be a valid numerical percentage.")
-
-            # Categorical Feature Encoding
+            # 3. Transform categorical inputs using saved LabelEncoders
             try:
                 gender_encoded = gender_encoder.transform([gender])[0]
-            except Exception:
-                raise ValueError(f"Invalid option selected for Gender: {gender}")
+            except Exception as e:
+                raise ValueError(f"Invalid option selected for Gender: '{gender}'. {str(e)}")
 
             try:
                 category_encoded = category_encoder.transform([category])[0]
-            except Exception:
-                raise ValueError(f"Invalid option selected for Category: {category}")
+            except Exception as e:
+                raise ValueError(f"Invalid option selected for Category: '{category}'. {str(e)}")
 
             try:
                 seat_encoded = seat_encoder.transform([seat_alloted])[0]
-            except Exception:
-                raise ValueError(f"Invalid option selected for Seat Alloted: {seat_alloted}")
+            except Exception as e:
+                raise ValueError(f"Invalid option selected for Seat Alloted: '{seat_alloted}'. {str(e)}")
 
-            # Construct input vector matching model features:
-            # ['MHTCET Percentile', 'Gender', 'Category', 'Seat Alloted']
-            features = np.array([[percentile, gender_encoded, category_encoded, seat_encoded]])
-
-            # Prediction
+            # 4. Predict using collegename_model.pkl
+            # Input features: ['MHTCET Percentile', 'Gender', 'Category', 'Seat Alloted']
+            features = np.array([[percentile_val, gender_encoded, category_encoded, seat_encoded]])
             pred = model.predict(features)
 
-            # Decode Target
+            # 5. Decode target output
             raw_prediction = target_encoder.inverse_transform(pred)[0]
 
-            # Split Prediction into Institute and Course
+            # Split target into Institute and Course
             if " | " in raw_prediction:
                 institute, course = raw_prediction.split(" | ", 1)
             else:
@@ -99,10 +87,8 @@ def index():
                 "course": course
             }
 
-        except ValueError as ve:
-            error_message = str(ve)
         except Exception as e:
-            error_message = f"An unexpected error occurred during prediction: {str(e)}"
+            error_message = str(e)
 
     return render_template("index.html", prediction=prediction_result, error=error_message)
 
