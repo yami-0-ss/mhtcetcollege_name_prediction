@@ -16,56 +16,63 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. CLASS ID TO INSTITUTE & COURSE LOOKUP TABLE
+# 2. EXACT CLASS ID MAPPING FROM CAP_Seat_Allocation_short.csv (50 Classes)
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
-    0: "College of Engineering, Pune | Computer Engineering",
-    1: "College of Engineering, Pune | Mechanical Engineering",
-    2: "College of Engineering, Pune | Electrical Engineering",
-    3: "College of Engineering, Pune | Civil Engineering",
-    4: "College of Engineering, Pune | Electronics & Telecommunication",
-    5: "Veermata Jijabai Technological Institute, Mumbai | Computer Engineering",
-    6: "Veermata Jijabai Technological Institute, Mumbai | Information Technology",
-    7: "Veermata Jijabai Technological Institute, Mumbai | Mechanical Engineering",
-    8: "Government College of Engineering, Aurangabad | Computer Science Engineering",
-    9: "Government College of Engineering, Aurangabad | Mechanical Engineering",
-    10: "Government College of Engineering, Amravati | Computer Science Engineering",
-    11: "Government College of Engineering, Amravati | Mechanical Engineering",
-    12: "Government College of Engineering, Karad | Civil Engineering",
-    13: "Government College of Engineering, Karad | Mechanical Engineering",
-    14: "Government College of Engineering, Nagpur | Computer Engineering",
-    15: "Government College of Engineering, Nagpur | Electrical Engineering",
-    16: "Walchand College of Engineering, Sangli | Computer Science Engineering",
-    17: "Walchand College of Engineering, Sangli | Information Technology",
-    18: "Walchand College of Engineering, Sangli | Mechanical Engineering",
-    19: "Sardar Patel Institute of Technology, Mumbai | Computer Engineering",
-    20: "Sardar Patel Institute of Technology, Mumbai | Computer Science & Engineering (Data Science)",
-    21: "PICT Pune | Computer Engineering",
-    22: "PICT Pune | Information Technology",
-    23: "PICT Pune | Electronics & Telecommunication Engineering",
-    24: "VIT Pune | Computer Engineering",
-    25: "VIT Pune | Information Technology",
-    26: "VIT Pune | Artificial Intelligence & Data Science",
-    27: "PCCOE Pune | Computer Engineering",
-    28: "PCCOE Pune | Information Technology",
-    29: "Government College of Engineering, Yavatmal | Computer Engineering",
-    30: "Government College of Engineering, Jalgaon | Computer Engineering",
-    31: "Government College of Engineering, Jalgaon | Mechanical Engineering",
-    32: "Government College of Engineering, Avasari | Computer Engineering",
-    33: "Government College of Engineering, Avasari | Mechanical Engineering",
-    34: "Government College of Engineering, Chandrapur | Computer Science Engineering",
-    35: "Government College of Engineering, Ratnagiri | Computer Engineering",
-    36: "MIT Academy of Engineering, Alandi, Pune | Computer Engineering",
-    37: "Cummins College of Engineering for Women, Pune | Computer Engineering",
-    38: "Cummins College of Engineering for Women, Pune | Information Technology",
-    39: "Thadomal Shahani Engineering College, Mumbai | Computer Engineering",
-    40: "D.J. Sanghvi College of Engineering, Mumbai | Computer Engineering",
-    41: "Fr. Conceicao Rodrigues College of Engineering, Mumbai | Computer Engineering",
-    42: "K.J. Somaiya College of Engineering, Mumbai | Computer Engineering"
+    0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
+    1: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Computer Engineering",
+    2: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Computer Science and Engineering",
+    3: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Electronics and Telecommunication Engg",
+    4: "COEP Technological University | Computer Science and Engineering",
+    5: "COEP Technological University | Electrical Engineering",
+    6: "COEP Technological University | Electronics and Telecommunication Engg",
+    7: "COEP Technological University | Instrumentation and Control Engineering",
+    8: "COEP Technological University | Mechanical Engineering",
+    9: "COEP Technological University | Robotics and Artificial Intelligence",
+    10: "Department of Technology, Shivaji University, Kolhapur | Food Technology",
+    11: "Fr. Conceicao Rodrigues College of Engineering, Bandra, Mumbai | Computer Science and Engineering",
+    12: "Government College of Engineering & Research, Avasari Khurd | Computer Engineering",
+    13: "Government College of Engineering, Nagpur | Computer Science and Engineering",
+    14: "ISBM College Of Engineering Pune | Computer Engineering",
+    15: "Institute of Chemical Technology, Matunga, Mumbai | Chemical Engineering",
+    16: "Institute of Chemical Technology, Matunga, Mumbai | Food Engineering and Technology",
+    17: "Institute of Chemical Technology, Matunga, Mumbai | Pharmaceuticals Chemistry and Technology",
+    18: "Institute of Chemical Technology, Matunga, Mumbai | Polymer Engineering and Technology",
+    19: "K J Somaiya Institute of Technology | Artificial Intelligence and Data Science",
+    20: "K J Somaiya Institute of Technology | Computer Engineering",
+    21: "K. K. Wagh Institute of Engineering Education and Research, Nashik | Chemical Engineering",
+    22: "Kolhapur Institute of Technology's College of Engineering(Autonomous), Kolhapur | Bio Technology",
+    23: "Laxminarayan Innovation Technological University, Nagpur | Food Technology",
+    24: "MIT Academy of Engineering, Alandi, Pune | Computer Engineering",
+    25: "MKSSS's Cummins College of Engineering for Women, Karvenagar, Pune | Computer Engineering",
+    26: "Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune | Computer Engineering",
+    27: "Pune Institute of Computer Technology | Artificial Intelligence (AI) and Data Science",
+    28: "Pune Institute of Computer Technology | Computer Engineering",
+    29: "Pune Institute of Computer Technology | Electronics and Computer Engineering",
+    30: "Pune Institute of Computer Technology | Electronics and Telecommunication Engg",
+    31: "Pune Institute of Computer Technology | Information Technology",
+    32: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Artificial Intelligence (AI) and Data Science",
+    33: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Artificial Intelligence and Machine Learning",
+    34: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Engineering",
+    35: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Science and Engineering (Internet of Things and Cyber Security)",
+    36: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Science and Engineering (Data Science)",
+    37: "Sinhgad College of Engineering, Vadgaon (BK), Pune | Bio Technology",
+    38: "Thadomal Shahani Engineering College, Bandra, Mumbai | Computer Engineering",
+    39: "Tulsiramji Gaikwad Patil College of Engineering & Technology, Nagpur | Bio Technology",
+    40: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Civil Engineering",
+    41: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Computer Engineering",
+    42: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electrical Engineering",
+    43: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics Engineering",
+    44: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics and Telecommunication Engg",
+    45: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Information Technology",
+    46: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Mechanical Engineering",
+    47: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Artificial Intelligence and Data Science",
+    48: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Computer Engineering",
+    49: "Walchand College of Engineering, Sangli | Computer Science and Engineering"
 }
 
 # -----------------------------------------------------------------------------
-# 3. CUSTOM CSS
+# 3. CUSTOM STYLING (Glassmorphism & Dashboard Layout)
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -174,8 +181,8 @@ with st.sidebar:
 
     st.header("📋 Candidate Details")
 
-    merit_no = st.number_input("Merit Number", min_value=1, value=2000, step=1)
-    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=58.00, step=0.01)
+    merit_no = st.number_input("Merit Number", min_value=1, value=1000, step=1)
+    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=99.50, step=0.01)
 
     if loaded_assets:
         model, gender_encoder, category_encoder, seat_encoder, target_encoder = loaded_assets
@@ -183,9 +190,9 @@ with st.sidebar:
         category_options = list(category_encoder.classes_)
         seat_options = list(seat_encoder.classes_)
     else:
-        gender_options = ["Female", "Male"]
-        category_options = ["GOPEN", "GSC", "GST", "OBC", "EWS", "SEBC"]
-        seat_options = ["Home University", "Other than Home University", "State Level"]
+        gender_options = ["F", "M"]
+        category_options = ["OPEN", "OBC", "SC", "ST", "NT 3 (NT-D)", "EWS"]
+        seat_options = ["LOPENS", "GOPENS", "LOBCS", "GOBCS", "LNEUT"]
 
     gender = st.selectbox("Gender", options=gender_options)
     category = st.selectbox("Category", options=category_options)
@@ -231,7 +238,7 @@ if predict_btn:
                 category_val = category_encoder.transform([category])[0]
                 seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                # 2. Input DataFrame
+                # 2. Input DataFrame matching model's expected features
                 input_df = pd.DataFrame([{
                     "MHTCET Percentile": percentile,
                     "Gender": gender_val,
@@ -243,14 +250,14 @@ if predict_btn:
                 raw_pred = model.predict(input_df)
                 pred_class_id = int(np.array(raw_pred).flatten()[0])
 
-                # 4. Target Decoding (encoder vs lookup dict resolution)
+                # 4. Target Decoding
                 try:
                     decoded = target_encoder.inverse_transform([pred_class_id])[0]
                     prediction_str = str(decoded)
                 except Exception:
                     prediction_str = str(pred_class_id)
 
-                # Fallback to CLASS_MAPPING dictionary if inverse_transform gives numeric string ID
+                # Fallback to CLASS_MAPPING if target_encoder outputs a raw number
                 if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
                     prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
 
@@ -289,11 +296,11 @@ if predict_btn:
 # 8. ABOUT SECTION
 # -----------------------------------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
-with st.expander("ℹ️ About the Project & Model Architecture", expanded=False):
+with st.expander("ℹ️ About the Project & Dataset", expanded=False):
     st.write("""
-        This predictor utilizes an ensemble **Random Forest Classifier** trained on MHT-CET admission statistics. 
-        It models historical allotment cutoffs across candidate parameters (Percentile, Category, Allotment Type, and Gender) 
-        to project the most likely institute and engineering program allocation.
+        This predictor utilizes an ensemble **Random Forest Classifier** trained on official MHT-CET seat allocation records (`CAP_Seat_Allocation_short.csv`). 
+        It models historical allotment cutoffs across candidate parameters (Percentile, Category, Seat Allotment Type, and Gender) 
+        to project the most likely institute and engineering department allocation.
     """)
 
 st.markdown("---")
