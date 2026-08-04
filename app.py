@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. EXACT CLASS ID MAPPING FROM CAP_Seat_Allocation_short.csv (50 Classes)
+# 2. EXACT CLASS ID MAPPING FROM CAP_Seat_Allocation_short.csv
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
     0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
@@ -59,13 +59,13 @@ CLASS_MAPPING = {
     37: "Sinhgad College of Engineering, Vadgaon (BK), Pune | Bio Technology",
     38: "Thadomal Shahani Engineering College, Bandra, Mumbai | Computer Engineering",
     39: "Tulsiramji Gaikwad Patil College of Engineering & Technology, Nagpur | Bio Technology",
-    40: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Civil Engineering",
-    41: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Computer Engineering",
-    42: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electrical Engineering",
-    43: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics Engineering",
-    44: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics and Telecommunication Engg",
-    45: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Information Technology",
-    46: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Mechanical Engineering",
+    40: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Civil Engineering",
+    41: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Computer Engineering",
+    42: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electrical Engineering",
+    43: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electronics Engineering",
+    44: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electronics and Telecommunication Engg",
+    45: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Information Technology",
+    46: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Mechanical Engineering",
     47: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Artificial Intelligence and Data Science",
     48: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Computer Engineering",
     49: "Walchand College of Engineering, Sangli | Computer Science and Engineering"
@@ -190,7 +190,7 @@ with st.sidebar:
         category_options = list(category_encoder.classes_)
         seat_options = list(seat_encoder.classes_)
     else:
-        gender_options = ["F", "M"]
+        gender_options = ["Female", "Male"]
         category_options = ["OPEN", "OBC", "SC", "ST", "NT 3 (NT-D)", "EWS"]
         seat_options = ["LOPENS", "GOPENS", "LOBCS", "GOBCS", "LNEUT"]
 
@@ -238,7 +238,7 @@ if predict_btn:
                 category_val = category_encoder.transform([category])[0]
                 seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                # 2. Input DataFrame matching model's expected features
+                # 2. Input DataFrame
                 input_df = pd.DataFrame([{
                     "MHTCET Percentile": percentile,
                     "Gender": gender_val,
@@ -250,14 +250,14 @@ if predict_btn:
                 raw_pred = model.predict(input_df)
                 pred_class_id = int(np.array(raw_pred).flatten()[0])
 
-                # 4. Target Decoding
+                # 4. Target Decoding (encoder vs lookup dict resolution)
                 try:
                     decoded = target_encoder.inverse_transform([pred_class_id])[0]
                     prediction_str = str(decoded)
                 except Exception:
                     prediction_str = str(pred_class_id)
 
-                # Fallback to CLASS_MAPPING if target_encoder outputs a raw number
+                # Fallback to CLASS_MAPPING dictionary if inverse_transform gives numeric string ID
                 if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
                     prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
 
