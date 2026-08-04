@@ -16,21 +16,21 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. EXACT CLASS ID MAPPING FROM CAP_Seat_Allocation_short.csv
+# 2. EXACT 50 TARGET CLASS MAPPINGS (FROM CAP_Seat_Allocation_short.csv)
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
     0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
-    1: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Computer Engineering",
-    2: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Computer Science and Engineering",
-    3: "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology, Andheri, Mumbai | Electronics and Telecommunication Engg",
-    4: "COEP Technological University | Computer Science and Engineering",
-    5: "COEP Technological University | Electrical Engineering",
-    6: "COEP Technological University | Electronics and Telecommunication Engg",
-    7: "COEP Technological University | Instrumentation and Control Engineering",
-    8: "COEP Technological University | Mechanical Engineering",
-    9: "COEP Technological University | Robotics and Artificial Intelligence",
+    1: "Bhartiya Vidya Bhavan's Sardar Patel Institute  of Technology , Andheri, Mumbai | Computer Engineering",
+    2: "Bhartiya Vidya Bhavan's Sardar Patel Institute  of Technology , Andheri, Mumbai | Computer Science and Engineering",
+    3: "Bhartiya Vidya Bhavan's Sardar Patel Institute  of Technology , Andheri, Mumbai | Electronics and Telecommunication Engg",
+    4: "COEP Technological University  | Computer Science and Engineering",
+    5: "COEP Technological University  | Electrical Engineering",
+    6: "COEP Technological University  | Electronics and Telecommunication Engg",
+    7: "COEP Technological University  | Instrumentation and Control Engineering",
+    8: "COEP Technological University  | Mechanical Engineering",
+    9: "COEP Technological University  | Robotics and Artificial Intelligence",
     10: "Department of Technology, Shivaji University, Kolhapur | Food Technology",
-    11: "Fr. Conceicao Rodrigues College of Engineering, Bandra, Mumbai | Computer Science and Engineering",
+    11: "Fr. Conceicao Rodrigues College of Engineering, Bandra,Mumbai | Computer Science and Engineering",
     12: "Government College of Engineering & Research, Avasari Khurd | Computer Engineering",
     13: "Government College of Engineering, Nagpur | Computer Science and Engineering",
     14: "ISBM College Of Engineering Pune | Computer Engineering",
@@ -43,36 +43,36 @@ CLASS_MAPPING = {
     21: "K. K. Wagh Institute of Engineering Education and Research, Nashik | Chemical Engineering",
     22: "Kolhapur Institute of Technology's College of Engineering(Autonomous), Kolhapur | Bio Technology",
     23: "Laxminarayan Innovation Technological University, Nagpur | Food Technology",
-    24: "MIT Academy of Engineering, Alandi, Pune | Computer Engineering",
-    25: "MKSSS's Cummins College of Engineering for Women, Karvenagar, Pune | Computer Engineering",
+    24: "MIT Academy of Engineering,Alandi, Pune | Computer Engineering",
+    25: "MKSSS's Cummins College of Engineering for Women, Karvenagar,Pune | Computer Engineering",
     26: "Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune | Computer Engineering",
     27: "Pune Institute of Computer Technology | Artificial Intelligence (AI) and Data Science",
     28: "Pune Institute of Computer Technology | Computer Engineering",
     29: "Pune Institute of Computer Technology | Electronics and Computer Engineering",
     30: "Pune Institute of Computer Technology | Electronics and Telecommunication Engg",
     31: "Pune Institute of Computer Technology | Information Technology",
-    32: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Artificial Intelligence (AI) and Data Science",
-    33: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Artificial Intelligence and Machine Learning",
-    34: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Engineering",
-    35: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Science and Engineering (Internet of Things and Cyber Security)",
-    36: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai | Computer Science and Engineering (Data Science)",
+    32: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai | Artificial Intelligence (AI) and Data Science",
+    33: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai | Artificial Intelligence and Machine Learning",
+    34: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai | Computer Engineering",
+    35: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai | Computer Science and Engineering (Internet of Things and Cyber Security Including Block Chain Technology)",
+    36: "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai | Computer Science and Engineering(Data Science)",
     37: "Sinhgad College of Engineering, Vadgaon (BK), Pune | Bio Technology",
     38: "Thadomal Shahani Engineering College, Bandra, Mumbai | Computer Engineering",
     39: "Tulsiramji Gaikwad Patil College of Engineering & Technology, Nagpur | Bio Technology",
-    40: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Civil Engineering",
-    41: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Computer Engineering",
-    42: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electrical Engineering",
-    43: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electronics Engineering",
-    44: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Electronics and Telecommunication Engg",
-    45: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Information Technology",
-    46: "Veermata Jijabai Technological Institute (VJTI), Matunga, Mumbai | Mechanical Engineering",
+    40: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Civil Engineering",
+    41: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Computer Engineering",
+    42: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electrical Engineering",
+    43: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics Engineering",
+    44: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Electronics and Telecommunication Engg",
+    45: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Information Technology",
+    46: "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai | Mechanical Engineering",
     47: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Artificial Intelligence and Data Science",
     48: "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai | Computer Engineering",
     49: "Walchand College of Engineering, Sangli | Computer Science and Engineering"
 }
 
 # -----------------------------------------------------------------------------
-# 3. CUSTOM STYLING (Glassmorphism & Dashboard Layout)
+# 3. CUSTOM STYLING (Glassmorphism UI)
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -110,7 +110,7 @@ custom_css = """
     }
 
     .result-title {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
         font-weight: 700;
         margin: 0;
     }
@@ -149,7 +149,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 @st.cache_resource
 def load_assets():
     files = {
-        "model": "collegename_model.pkl",
+        "model": "collegename_model_2.pkl" if os.path.exists("collegename_model_2.pkl") else "collegename_model.pkl",
         "gender": "gender_encoder.pkl",
         "category": "category_encoder.pkl",
         "seat": "seat_encoder.pkl",
@@ -182,7 +182,7 @@ with st.sidebar:
     st.header("📋 Candidate Details")
 
     merit_no = st.number_input("Merit Number", min_value=1, value=1000, step=1)
-    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=99.50, step=0.01)
+    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=99.60, step=0.01)
 
     if loaded_assets:
         model, gender_encoder, category_encoder, seat_encoder, target_encoder = loaded_assets
@@ -190,7 +190,7 @@ with st.sidebar:
         category_options = list(category_encoder.classes_)
         seat_options = list(seat_encoder.classes_)
     else:
-        gender_options = ["Female", "Male"]
+        gender_options = ["F", "M"]
         category_options = ["OPEN", "OBC", "SC", "ST", "NT 3 (NT-D)", "EWS"]
         seat_options = ["LOPENS", "GOPENS", "LOBCS", "GOBCS", "LNEUT"]
 
@@ -211,7 +211,6 @@ if missing_files:
     st.info("Ensure all `.pkl` files are placed inside the project directory.")
     st.stop()
 
-# Overview Metrics
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric(label="Model Algorithm", value="Random Forest")
@@ -223,7 +222,7 @@ with col3:
 st.markdown("---")
 
 # -----------------------------------------------------------------------------
-# 7. PREDICTION ENGINE
+# 7. PREDICTION LOGIC
 # -----------------------------------------------------------------------------
 if predict_btn:
     if percentile <= 0 or percentile > 100:
@@ -233,12 +232,10 @@ if predict_btn:
     else:
         with st.spinner("Processing inputs and making prediction..."):
             try:
-                # 1. Categorical Feature Encoding
                 gender_val = gender_encoder.transform([gender])[0]
                 category_val = category_encoder.transform([category])[0]
                 seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                # 2. Input DataFrame
                 input_df = pd.DataFrame([{
                     "MHTCET Percentile": percentile,
                     "Gender": gender_val,
@@ -246,29 +243,24 @@ if predict_btn:
                     "Seat Alloted": seat_val
                 }])
 
-                # 3. Model Prediction
                 raw_pred = model.predict(input_df)
                 pred_class_id = int(np.array(raw_pred).flatten()[0])
 
-                # 4. Target Decoding (encoder vs lookup dict resolution)
                 try:
                     decoded = target_encoder.inverse_transform([pred_class_id])[0]
                     prediction_str = str(decoded)
                 except Exception:
                     prediction_str = str(pred_class_id)
 
-                # Fallback to CLASS_MAPPING dictionary if inverse_transform gives numeric string ID
                 if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
                     prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
 
-                # 5. Parse Institute and Course String
                 if " | " in prediction_str:
                     institute, course = prediction_str.split(" | ", 1)
                 else:
                     institute = prediction_str
                     course = "General Engineering Department"
 
-                # 6. Render Output Result Cards
                 res_col1, res_col2 = st.columns(2)
 
                 with res_col1:
@@ -293,15 +285,32 @@ if predict_btn:
                 st.error(f"An unexpected error occurred during prediction: {str(e)}")
 
 # -----------------------------------------------------------------------------
-# 8. ABOUT SECTION
+# 8. ALL COLLEGES & PERCENTILE LIST SECTION
 # -----------------------------------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
-with st.expander("ℹ️ About the Project & Dataset", expanded=False):
-    st.write("""
-        This predictor utilizes an ensemble **Random Forest Classifier** trained on official MHT-CET seat allocation records (`CAP_Seat_Allocation_short.csv`). 
-        It models historical allotment cutoffs across candidate parameters (Percentile, Category, Seat Allotment Type, and Gender) 
-        to project the most likely institute and engineering department allocation.
-    """)
+with st.expander("📊 Full College & Department List with Historical Percentiles", expanded=False):
+    st.write("Below is the complete list of all 50 target institute and course combinations present in the dataset along with their percentile ranges[cite: 3]:")
+    
+    # Load and display CSV summary table dynamically
+    if os.path.exists("CAP_Seat_Allocation_short.csv"):
+        df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
+        df_csv['Target'] = df_csv['Institute Name'].astype(str) + " | " + df_csv['Course Name'].astype(str)
+        
+        summary_data = []
+        for class_id, target_name in CLASS_MAPPING.items():
+            sub = df_csv[df_csv['Target'] == target_name]
+            if not sub.empty:
+                inst, dept = target_name.split(" | ", 1)
+                summary_data.append({
+                    "Class ID": class_id,
+                    "Institute Name": inst,
+                    "Course Name": dept,
+                    "Min Percentile": f"{sub['MHTCET Percentile'].min():.2f}%",
+                    "Max Percentile": f"{sub['MHTCET Percentile'].max():.2f}%",
+                    "Average Percentile": f"{sub['MHTCET Percentile'].mean():.2f}%"
+                })
+        
+        st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
 
 st.markdown("---")
 st.caption("MHT-CET Admission Predictor • Streamlit Community Cloud Ready")
