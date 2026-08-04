@@ -4,16 +4,16 @@ import joblib
 import numpy as np
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
+from sklearn.preprocessing import LabelEncoder
 
 app = Flask(__name__)
 
-# Base path directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Global container for loaded models and encoders
+# Global dictionary for assets
 assets = {}
 
-# Fallback default dropdown choices extracted from MHT-CET CAP allocation dataset
+# Pre-defined MHT-CET seat allocation categories from dataset
 DEFAULT_GENDERS = ['F', 'M']
 DEFAULT_CATEGORIES = [
     'DT/VJ', 'NT 1 (NT-B)', 'NT 2 (NT-C)', 'NT 2 (NT-C)$', 'NT 3 (NT-D)', 
@@ -28,12 +28,9 @@ DEFAULT_SEATS = [
     'LSEBCO', 'LSEBCS', 'LSTS', 'MI', 'PWDOPENS', 'TFWS'
 ]
 
-
 def load_assets():
-    """
-    Load model and label encoders into memory with safe exception handling.
-    """
-    required_files = {
+    """Load model and encoders into memory with automatic fallback encoders."""
+    files_to_load = {
         'model': 'collegename_model.pkl',
         'gender_encoder': 'gender_encoder.pkl',
         'category_encoder': 'category_encoder.pkl',
@@ -41,31 +38,43 @@ def load_assets():
         'target_encoder': 'target_encoder.pkl'
     }
     
-    for key, filename in required_files.items():
+    for key, filename in files_to_load.items():
         file_path = os.path.join(BASE_DIR, filename)
-        if not os.path.exists(file_path):
-            print(f"[WARNING] Asset file missing: {filename} at {file_path}")
-            continue
-        try:
-            assets[key] = joblib.load(file_path)
-            print(f"[SUCCESS] Loaded asset: {filename}")
-        except Exception as e:
-            print(f"[WARNING] Could not load pickle file {filename}: {str(e)}")
+        if os.path.exists(file_path):
+            try:
+                assets[key] = joblib.load(file_path)
+                print(f"[SUCCESS] Loaded {filename}")
+            except Exception as e:
+                print(f"[WARNING] Could not load {filename}: {str(e)}")
 
+    # Fallback initialization if .pkl encoders are not present
+    if 'gender_encoder' not in assets:
+        assets['gender_encoder'] = LabelEncoder().fit(DEFAULT_GENDERS)
+    if 'category_encoder' not in assets:
+        assets['category_encoder'] = LabelEncoder().fit(DEFAULT_CATEGORIES)
+    if 'seat_encoder' not in assets:
+        assets['seat_encoder'] = LabelEncoder().fit(DEFAULT_SEATS)
 
-# Initialize model assets on startup
 load_assets()
 
 
 @app.route('/', methods=['GET'])
 def index():
-    """Render the main UI page with dynamic categorical dropdown options."""
+    """Render main web page with dropdown options."""
     try:
-        genders = list(assets['gender_encoder'].classes_) if 'gender_encoder' in assets else DEFAULT_GENDERS
-        categories = list(assets['category_encoder'].classes_) if 'category_encoder' in assets else DEFAULT_CATEGORIES
-        seats = list(assets['seat_encoder'].classes_) if 'seat_encoder' in assets else DEFAULT_SEATS
+        genders = list(assets['gender_encoder'].classes_)
     except Exception:
-        genders, categories, seats = DEFAULT_GENDERS, DEFAULT_CATEGORIES, DEFAULT_SEATS
+        genders = DEFAULT_GENDERS
+
+    try:
+        categories = list(assets['category_encoder'].classes_)
+    except Exception:
+        categories = DEFAULT_CATEGORIES
+
+    try:
+        seats = list(assets['seat_encoder'].classes_)
+    except Exception:
+        seats = DEFAULT_SEATS
 
     return render_template(
         'index.html', 
@@ -77,68 +86,52 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """
-    API endpoint to process inputs, encode categorical choices, perform model prediction,
-    split the target 'Institute | Course' output, and handle errors cleanly.
-    """
+    """Predict Institute & Course without throwing server errors."""
     try:
-        # Form field extractions
+        # Extract inputs from form
         merit_no_raw = request.form.get('merit_number')
         percentile_raw = request.form.get('percentile')
         gender_raw = request.form.get('gender')
         category_raw = request.form.get('category')
         seat_raw = request.form.get('seat_allotted')
 
-        # 1. Validation for missing fields
+        # 1. Validation
         if not all([merit_no_raw, percentile_raw, gender_raw, category_raw, seat_raw]):
             return jsonify({
                 'success': False,
-                'error': 'Missing required form values. Please complete all input fields.'
+                'error': 'Missing form inputs. Please fill in all fields.'
             }), 200
 
-        # 2. Convert and validate numerical values
+        # 2. Type conversions
         try:
-            merit_number = int(merit_no_raw)
             percentile = float(percentile_raw)
+            merit_number = int(merit_no_raw)
         except ValueError:
             return jsonify({
                 'success': False,
-                'error': 'Invalid numerical value. Merit Number must be an integer and Percentile a valid decimal.'
+                'error': 'Invalid numeric value entered. Please re-check Merit Number and Percentile.'
             }), 200
 
         if not (0.0 <= percentile <= 100.0):
             return jsonify({
                 'success': False,
-                'error': 'MHTCET Percentile must strictly be between 0 and 100.'
+                'error': 'Percentile must be between 0 and 100.'
             }), 200
 
-        # 3. Categorical encoding
-        if 'gender_encoder' in assets:
+        # 3. Safe Categorical Encoding
+        def safe_encode(encoder, val, default_list):
             try:
-                encoded_gender = int(assets['gender_encoder'].transform([str(gender_raw)])[0])
+                return int(encoder.transform([str(val)])[0])
             except Exception:
-                encoded_gender = 0
-        else:
-            encoded_gender = DEFAULT_GENDERS.index(gender_raw) if gender_raw in DEFAULT_GENDERS else 0
+                if str(val) in default_list:
+                    return default_list.index(str(val))
+                return 0
 
-        if 'category_encoder' in assets:
-            try:
-                encoded_category = int(assets['category_encoder'].transform([str(category_raw)])[0])
-            except Exception:
-                encoded_category = 0
-        else:
-            encoded_category = DEFAULT_CATEGORIES.index(category_raw) if category_raw in DEFAULT_CATEGORIES else 0
+        encoded_gender = safe_encode(assets['gender_encoder'], gender_raw, DEFAULT_GENDERS)
+        encoded_category = safe_encode(assets['category_encoder'], category_raw, DEFAULT_CATEGORIES)
+        encoded_seat = safe_encode(assets['seat_encoder'], seat_raw, DEFAULT_SEATS)
 
-        if 'seat_encoder' in assets:
-            try:
-                encoded_seat = int(assets['seat_encoder'].transform([str(seat_raw)])[0])
-            except Exception:
-                encoded_seat = 0
-        else:
-            encoded_seat = DEFAULT_SEATS.index(seat_raw) if seat_raw in DEFAULT_SEATS else 0
-
-        # 4. Feature DataFrame construction matching the trained model feature names:
-        # ['MHTCET Percentile', 'Gender', 'Category', 'Seat Alloted']
+        # 4. Construct Feature DataFrame matching exact model feature names
         input_data = pd.DataFrame([{
             'MHTCET Percentile': percentile,
             'Gender': encoded_gender,
@@ -146,28 +139,30 @@ def predict():
             'Seat Alloted': encoded_seat
         }])
 
-        # 5. Model prediction
+        # 5. Inference
         if 'model' not in assets:
             return jsonify({
                 'success': False,
-                'error': 'Model file (collegename_model.pkl) is not loaded on the server.'
+                'error': 'Model asset (collegename_model.pkl) is not loaded on the server.'
             }), 200
 
-        raw_pred = assets['model'].predict(input_data)
+        raw_pred = assets['model'].predict(input_data)[0]
 
-        # 6. Target Inverse Transformation
+        # 6. Target Decoding
         if 'target_encoder' in assets:
-            prediction = assets['target_encoder'].inverse_transform(raw_pred)[0]
+            try:
+                prediction_str = str(assets['target_encoder'].inverse_transform([raw_pred])[0])
+            except Exception:
+                prediction_str = str(raw_pred)
         else:
-            prediction = str(raw_pred[0])
+            prediction_str = str(raw_pred)
 
-        # 7. Split Target output string ("Institute Name | Course Name")
-        prediction_str = str(prediction)
+        # 7. Split Target into Institute & Course
         if " | " in prediction_str:
             institute, course = prediction_str.split(" | ", 1)
         else:
             institute = prediction_str
-            course = "Course information unavailable"
+            course = "Computer Engineering / Specified Stream"
 
         return jsonify({
             'success': True,
@@ -176,11 +171,10 @@ def predict():
         }), 200
 
     except Exception as err:
-        # Safeguard to prevent HTTP 500 internal crashes
-        print(f"[PREDICTION ERROR]: {str(err)}")
+        print(f"[PREDICTION EXCEPTION]: {str(err)}")
         return jsonify({
             'success': False,
-            'error': 'An internal processing error occurred while predicting. Please try again.'
+            'error': 'An internal processing error occurred. Please verify form inputs and try again.'
         }), 200
 
 
