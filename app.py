@@ -1,41 +1,3 @@
-import joblib
-import pandas as pd
-
-# Load CSV
-df = pd.read_csv("CAP_Seat_Allocation_short_2.csv")
-df['Target'] = df['Institute Name'].astype(str) + " | " + df['Course Name'].astype(str)
-
-# Sort unique targets alphabetically as fitted by LabelEncoder
-unique_targets = sorted(df['Target'].unique())
-
-print(f"Total Unique Targets: {len(unique_targets)}")
-for idx, target in enumerate(unique_targets):
-    sub = df[df['Target'] == target]
-    p_min = sub['MHTCET Percentile'].min()
-    p_max = sub['MHTCET Percentile'].max()
-    print(f"{idx}: '{target}' (Percentile Range: {p_min:.2f}% - {p_max:.2f}%)")
-
-import os
-import pandas as pd
-
-# Check files in working directory
-files = os.listdir('.')
-csv_files = [f for f in files if f.endswith('.csv')]
-print("CSV Files found:", csv_files)
-
-# Find the uploaded CSV file name
-for csv in csv_files:
-    df = pd.read_csv(csv)
-    if 'Institute Name' in df.columns:
-        df['Target'] = df['Institute Name'].astype(str) + " | " + df['Course Name'].astype(str)
-        unique_targets = sorted(df['Target'].unique())
-        print(f"\n--- Mapping for {csv} ({len(unique_targets)} Classes) ---")
-        for idx, target in enumerate(unique_targets):
-            sub = df[df['Target'] == target]
-            p_min = sub['MHTCET Percentile'].min()
-            p_max = sub['MHTCET Percentile'].max()
-            print(f"    {idx}: \"{target}\",  # %ile: {p_min:.2f}% - {p_max:.2f}%")
-
 import os
 import joblib
 import pandas as pd
@@ -47,14 +9,14 @@ from PIL import Image
 # 1. PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="MHT-CET College & Course Predictor",
+    page_title="MHT-CET College & Course Predictor Pro",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # -----------------------------------------------------------------------------
-# 2. EXACT 50 TARGET CLASS MAPPINGS (FROM CAP_Seat_Allocation_short.csv)
+# 2. EXACT 50 TARGET CLASS MAPPINGS & HISTORICAL CUTOFF DATA
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
     0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
@@ -109,6 +71,60 @@ CLASS_MAPPING = {
     49: "Walchand College of Engineering, Sangli | Computer Science and Engineering"
 }
 
+# (Min Cutoff %, Max Cutoff %, Average Cutoff %) from CAP_Seat_Allocation_short.csv
+CUTOFF_STATS = {
+    0: (99.50, 99.70, 99.57),
+    1: (99.50, 99.96, 99.74),
+    2: (99.51, 99.97, 99.76),
+    3: (99.50, 99.72, 99.60),
+    4: (99.54, 100.00, 99.90),
+    5: (99.50, 99.68, 99.56),
+    6: (99.52, 99.97, 99.73),
+    7: (99.63, 100.00, 99.72),
+    8: (99.51, 99.98, 99.69),
+    9: (99.53, 100.00, 99.76),
+    10: (99.56, 99.56, 99.56),
+    11: (99.68, 99.68, 99.68),
+    12: (99.92, 99.92, 99.92),
+    13: (99.59, 99.59, 99.59),
+    14: (99.72, 99.72, 99.72),
+    15: (99.53, 100.00, 99.72),
+    16: (99.55, 99.72, 99.65),
+    17: (99.57, 99.94, 99.77),
+    18: (99.51, 99.51, 99.51),
+    19: (99.60, 99.60, 99.60),
+    20: (99.58, 99.76, 99.67),
+    21: (99.51, 99.51, 99.51),
+    22: (99.69, 99.69, 99.69),
+    23: (99.62, 99.62, 99.62),
+    24: (99.62, 99.69, 99.66),
+    25: (99.51, 99.93, 99.67),
+    26: (99.51, 99.82, 99.64),
+    27: (99.53, 99.79, 99.61),
+    28: (99.50, 99.97, 99.73),
+    29: (99.50, 99.56, 99.53),
+    30: (99.51, 99.71, 99.64),
+    31: (99.50, 99.75, 99.62),
+    32: (99.50, 99.50, 99.50),
+    33: (99.53, 99.53, 99.53),
+    34: (99.50, 99.83, 99.61),
+    35: (99.67, 99.67, 99.67),
+    36: (99.79, 99.79, 99.79),
+    37: (99.61, 100.00, 99.81),
+    38: (99.63, 99.90, 99.76),
+    39: (99.90, 99.90, 99.90),
+    40: (99.91, 99.91, 99.91),
+    41: (99.50, 100.00, 99.87),
+    42: (99.53, 99.86, 99.62),
+    43: (99.56, 99.87, 99.66),
+    44: (99.54, 99.92, 99.73),
+    45: (99.50, 99.96, 99.81),
+    46: (99.59, 99.72, 99.63),
+    47: (99.69, 99.69, 99.69),
+    48: (99.55, 99.69, 99.62),
+    49: (99.50, 99.76, 99.60)
+}
+
 # -----------------------------------------------------------------------------
 # 3. CUSTOM STYLING (Glassmorphism UI)
 # -----------------------------------------------------------------------------
@@ -132,6 +148,15 @@ custom_css = """
     .result-card-course {
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         border-left: 5px solid #1E88E5;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .cutoff-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+        border-left: 5px solid #00C853;
         border-radius: 12px;
         padding: 20px;
         margin-top: 15px;
@@ -186,8 +211,12 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_assets():
+    model_file = "collegename_model_3.pkl" if os.path.exists("collegename_model_3.pkl") else (
+        "collegename_model_2.pkl" if os.path.exists("collegename_model_2.pkl") else "collegename_model.pkl"
+    )
+    
     files = {
-        "model": "collegename_model_2.pkl" if os.path.exists("collegename_model_2.pkl") else "collegename_model.pkl",
+        "model": model_file,
         "gender": "gender_encoder.pkl",
         "category": "category_encoder.pkl",
         "seat": "seat_encoder.pkl",
@@ -239,7 +268,7 @@ with st.sidebar:
     predict_btn = st.button("Predict College")
 
 # -----------------------------------------------------------------------------
-# 6. DASHBOARD MAIN CONTENT
+# 6. DASHBOARD MAIN HEADER & TABS
 # -----------------------------------------------------------------------------
 st.markdown("<h1 class='gradient-text'>MHT-CET College & Course Predictor</h1>", unsafe_allow_html=True)
 st.caption("Machine Learning powered engine for estimating MHT-CET institute and course allotments.")
@@ -249,106 +278,148 @@ if missing_files:
     st.info("Ensure all `.pkl` files are placed inside the project directory.")
     st.stop()
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric(label="Model Algorithm", value="Random Forest")
-with col2:
-    st.metric(label="Input Percentile", value=f"{percentile:.2f} %ile")
-with col3:
-    st.metric(label="Input Merit Rank", value=f"#{merit_no}")
-
-st.markdown("---")
+tab1, tab2, tab3 = st.tabs(["🔮 AI Prediction Engine", "📊 Cutoff Explorer", "🌟 Recommendations"])
 
 # -----------------------------------------------------------------------------
-# 7. PREDICTION LOGIC
+# TAB 1: PREDICTION ENGINE WITH CUTOFF STATS
 # -----------------------------------------------------------------------------
-if predict_btn:
-    if percentile <= 0 or percentile > 100:
-        st.error("Please enter a valid MHTCET percentile between 0 and 100.")
-    elif merit_no <= 0:
-        st.error("Please enter a valid positive Merit Number.")
-    else:
-        with st.spinner("Processing inputs and making prediction..."):
-            try:
-                gender_val = gender_encoder.transform([gender])[0]
-                category_val = category_encoder.transform([category])[0]
-                seat_val = seat_encoder.transform([seat_alloted])[0]
+with tab1:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Model Algorithm", value="Random Forest")
+    with col2:
+        st.metric(label="Input Percentile", value=f"{percentile:.2f} %ile")
+    with col3:
+        st.metric(label="Input Merit Rank", value=f"#{merit_no}")
 
-                input_df = pd.DataFrame([{
-                    "MHTCET Percentile": percentile,
-                    "Gender": gender_val,
-                    "Category": category_val,
-                    "Seat Alloted": seat_val
-                }])
+    st.markdown("---")
 
-                raw_pred = model.predict(input_df)
-                pred_class_id = int(np.array(raw_pred).flatten()[0])
-
+    if predict_btn:
+        if percentile <= 0 or percentile > 100:
+            st.error("Please enter a valid MHTCET percentile between 0 and 100.")
+        elif merit_no <= 0:
+            st.error("Please enter a valid positive Merit Number.")
+        else:
+            with st.spinner("Processing inputs and making prediction..."):
                 try:
-                    decoded = target_encoder.inverse_transform([pred_class_id])[0]
-                    prediction_str = str(decoded)
-                except Exception:
-                    prediction_str = str(pred_class_id)
+                    gender_val = gender_encoder.transform([gender])[0]
+                    category_val = category_encoder.transform([category])[0]
+                    seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
-                    prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
+                    input_df = pd.DataFrame([{
+                        "MHTCET Percentile": percentile,
+                        "Gender": gender_val,
+                        "Category": category_val,
+                        "Seat Alloted": seat_val
+                    }])
 
-                if " | " in prediction_str:
-                    institute, course = prediction_str.split(" | ", 1)
-                else:
-                    institute = prediction_str
-                    course = "General Engineering Department"
+                    raw_pred = model.predict(input_df)
+                    pred_class_id = int(np.array(raw_pred).flatten()[0])
 
-                res_col1, res_col2 = st.columns(2)
+                    try:
+                        decoded = target_encoder.inverse_transform([pred_class_id])[0]
+                        prediction_str = str(decoded)
+                    except Exception:
+                        prediction_str = str(pred_class_id)
 
-                with res_col1:
-                    st.markdown(f"""
-                        <div class="result-card-inst">
-                            <div class="result-header">🎓 PREDICTED INSTITUTE</div>
-                            <div class="result-title">{institute}</div>
-                        </div>
-                    """, unsafe_allow_html=True)
+                    if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
+                        prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
 
-                with res_col2:
-                    st.markdown(f"""
-                        <div class="result-card-course">
-                            <div class="result-header">📚 PREDICTED COURSE</div>
-                            <div class="result-title">{course}</div>
-                        </div>
-                    """, unsafe_allow_html=True)
+                    if " | " in prediction_str:
+                        institute, course = prediction_str.split(" | ", 1)
+                    else:
+                        institute = prediction_str
+                        course = "General Engineering Department"
 
-                st.success("Prediction generated successfully!")
+                    # Get Cutoff Stats
+                    p_min, p_max, p_avg = CUTOFF_STATS.get(pred_class_id, (0.0, 0.0, 0.0))
 
-            except Exception as e:
-                st.error(f"An unexpected error occurred during prediction: {str(e)}")
+                    # Render 3 Result Cards (Institute, Course, and College Cutoff)
+                    res_col1, res_col2, res_col3 = st.columns(3)
+
+                    with res_col1:
+                        st.markdown(f"""
+                            <div class="result-card-inst">
+                                <div class="result-header">🎓 PREDICTED INSTITUTE</div>
+                                <div class="result-title">{institute}</div>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+                    with res_col2:
+                        st.markdown(f"""
+                            <div class="result-card-course">
+                                <div class="result-header">📚 PREDICTED COURSE</div>
+                                <div class="result-title">{course}</div>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+                    with res_col3:
+                        st.markdown(f"""
+                            <div class="cutoff-card">
+                                <div class="result-header">📈 HISTORICAL CUTOFF %ILE</div>
+                                <div class="result-title">{p_min:.2f}% - {p_max:.2f}%</div>
+                                <small style="color: #888;">Average: {p_avg:.2f}%</small>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+                    st.success("Prediction generated successfully!")
+
+                except Exception as e:
+                    st.error(f"An unexpected error occurred during prediction: {str(e)}")
 
 # -----------------------------------------------------------------------------
-# 8. ALL COLLEGES & PERCENTILE LIST SECTION
+# TAB 2: CUTOFF EXPLORER
 # -----------------------------------------------------------------------------
-st.markdown("<br>", unsafe_allow_html=True)
-with st.expander("📊 Full College & Department List with Historical Percentiles", expanded=False):
-    st.write("Below is the complete list of all 50 target institute and course combinations present in the dataset along with their percentile ranges[cite: 3]:")
+with tab2:
+    st.subheader("📊 Explore All 50 Colleges & Department Cutoffs")
     
-    # Load and display CSV summary table dynamically
     if os.path.exists("CAP_Seat_Allocation_short.csv"):
         df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
         df_csv['Target'] = df_csv['Institute Name'].astype(str) + " | " + df_csv['Course Name'].astype(str)
         
+        search_query = st.text_input("🔍 Search by College or Course Name", value="")
+
         summary_data = []
         for class_id, target_name in CLASS_MAPPING.items():
             sub = df_csv[df_csv['Target'] == target_name]
             if not sub.empty:
                 inst, dept = target_name.split(" | ", 1)
-                summary_data.append({
-                    "Class ID": class_id,
-                    "Institute Name": inst,
-                    "Course Name": dept,
-                    "Min Percentile": f"{sub['MHTCET Percentile'].min():.2f}%",
-                    "Max Percentile": f"{sub['MHTCET Percentile'].max():.2f}%",
-                    "Average Percentile": f"{sub['MHTCET Percentile'].mean():.2f}%"
-                })
+                if search_query.lower() in inst.lower() or search_query.lower() in dept.lower():
+                    summary_data.append({
+                        "Class ID": class_id,
+                        "Institute Name": inst,
+                        "Course Name": dept,
+                        "Min Cutoff %ile": float(sub['MHTCET Percentile'].min()),
+                        "Max Cutoff %ile": float(sub['MHTCET Percentile'].max()),
+                        "Avg Percentile": float(sub['MHTCET Percentile'].mean())
+                    })
         
-        st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
+        res_df = pd.DataFrame(summary_data)
+        st.dataframe(res_df.style.format({
+            "Min Cutoff %ile": "{:.2f}%",
+            "Max Cutoff %ile": "{:.2f}%",
+            "Avg Percentile": "{:.2f}%"
+        }), use_container_width=True)
+
+# -----------------------------------------------------------------------------
+# TAB 3: TOP RECOMMENDATIONS
+# -----------------------------------------------------------------------------
+with tab3:
+    st.subheader(f"🌟 Eligible Colleges for Percentile: {percentile:.2f}%")
+    
+    if os.path.exists("CAP_Seat_Allocation_short.csv"):
+        df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
+        eligible = df_csv[df_csv['MHTCET Percentile'] <= percentile]
+        
+        if not eligible.empty:
+            recs = eligible.groupby(['Institute Name', 'Course Name'])['MHTCET Percentile'].agg(['min', 'max']).reset_index()
+            recs = recs.rename(columns={'min': 'Min Cutoff %ile', 'max': 'Max Cutoff %ile'}).sort_values(by='Max Cutoff %ile', ascending=False)
+            st.dataframe(recs.style.format({
+                "Min Cutoff %ile": "{:.2f}%",
+                "Max Cutoff %ile": "{:.2f}%"
+            }), use_container_width=True)
+        else:
+            st.warning("No colleges found below your specified percentile cutoff.")
 
 st.markdown("---")
 st.caption("MHT-CET Admission Predictor • Streamlit Community Cloud Ready")
