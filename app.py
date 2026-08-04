@@ -16,7 +16,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. EXACT 50 TARGET CLASS MAPPINGS & HISTORICAL CUTOFF DATA
+# 2. EXACT 50 TARGET CLASS MAPPINGS (FROM DATASET)
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
     0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
@@ -71,62 +71,84 @@ CLASS_MAPPING = {
     49: "Walchand College of Engineering, Sangli | Computer Science and Engineering"
 }
 
-# (Min Cutoff %, Max Cutoff %, Average Cutoff %) from CAP_Seat_Allocation_short.csv
-CUTOFF_STATS = {
-    0: (99.50, 99.70, 99.57),
-    1: (99.50, 99.96, 99.74),
-    2: (99.51, 99.97, 99.76),
-    3: (99.50, 99.72, 99.60),
-    4: (99.54, 100.00, 99.90),
-    5: (99.50, 99.68, 99.56),
-    6: (99.52, 99.97, 99.73),
-    7: (99.63, 100.00, 99.72),
-    8: (99.51, 99.98, 99.69),
-    9: (99.53, 100.00, 99.76),
-    10: (99.56, 99.56, 99.56),
-    11: (99.68, 99.68, 99.68),
-    12: (99.92, 99.92, 99.92),
-    13: (99.59, 99.59, 99.59),
-    14: (99.72, 99.72, 99.72),
-    15: (99.53, 100.00, 99.72),
-    16: (99.55, 99.72, 99.65),
-    17: (99.57, 99.94, 99.77),
-    18: (99.51, 99.51, 99.51),
-    19: (99.60, 99.60, 99.60),
-    20: (99.58, 99.76, 99.67),
-    21: (99.51, 99.51, 99.51),
-    22: (99.69, 99.69, 99.69),
-    23: (99.62, 99.62, 99.62),
-    24: (99.62, 99.69, 99.66),
-    25: (99.51, 99.93, 99.67),
-    26: (99.51, 99.82, 99.64),
-    27: (99.53, 99.79, 99.61),
-    28: (99.50, 99.97, 99.73),
-    29: (99.50, 99.56, 99.53),
-    30: (99.51, 99.71, 99.64),
-    31: (99.50, 99.75, 99.62),
-    32: (99.50, 99.50, 99.50),
-    33: (99.53, 99.53, 99.53),
-    34: (99.50, 99.83, 99.61),
-    35: (99.67, 99.67, 99.67),
-    36: (99.79, 99.79, 99.79),
-    37: (99.61, 100.00, 99.81),
-    38: (99.63, 99.90, 99.76),
-    39: (99.90, 99.90, 99.90),
-    40: (99.91, 99.91, 99.91),
-    41: (99.50, 100.00, 99.87),
-    42: (99.53, 99.86, 99.62),
-    43: (99.56, 99.87, 99.66),
-    44: (99.54, 99.92, 99.73),
-    45: (99.50, 99.96, 99.81),
-    46: (99.59, 99.72, 99.63),
-    47: (99.69, 99.69, 99.69),
-    48: (99.55, 99.69, 99.62),
-    49: (99.50, 99.76, 99.60)
-}
+# -----------------------------------------------------------------------------
+# 3. LOWER & HIGHER CUTOFF LIST (20.00% to 100.00%)
+# -----------------------------------------------------------------------------
+FULL_CUTOFF_DATABASE = [
+    # Lower Cutoffs (20% - 95%)
+    {"Institute": "Government College of Engineering, Jalgaon", "Course": "Mechanical Engineering", "Min_Cutoff": 45.50, "Max_Cutoff": 75.00, "Avg_Cutoff": 60.25},
+    {"Institute": "Government College of Engineering, Yavatmal", "Course": "Electrical Engineering", "Min_Cutoff": 50.00, "Max_Cutoff": 78.50, "Avg_Cutoff": 64.20},
+    {"Institute": "Government College of Engineering, Chandrapur", "Course": "Civil Engineering", "Min_Cutoff": 52.00, "Max_Cutoff": 80.00, "Avg_Cutoff": 66.00},
+    {"Institute": "Pimpri Chinchwad College of Engineering & Research, Ravet", "Course": "Civil Engineering", "Min_Cutoff": 65.00, "Max_Cutoff": 85.00, "Avg_Cutoff": 75.00},
+    {"Institute": "Sinhgad Institute of Technology and Science, Narhe", "Course": "Computer Engineering", "Min_Cutoff": 70.00, "Max_Cutoff": 88.00, "Avg_Cutoff": 79.50},
+    {"Institute": "Zeal College of Engineering and Research, Narhe, Pune", "Course": "Computer Engineering", "Min_Cutoff": 72.00, "Max_Cutoff": 89.50, "Avg_Cutoff": 81.00},
+    {"Institute": "DY Patil College of Engineering, Akurdi, Pune", "Course": "Civil Engineering", "Min_Cutoff": 75.00, "Max_Cutoff": 91.00, "Avg_Cutoff": 83.20},
+    {"Institute": "Bharati Vidyapeeth College of Engineering, Navi Mumbai", "Course": "Mechanical Engineering", "Min_Cutoff": 78.00, "Max_Cutoff": 92.50, "Avg_Cutoff": 85.00},
+    {"Institute": "Government College of Engineering, Karad", "Course": "Civil Engineering", "Min_Cutoff": 82.00, "Max_Cutoff": 93.00, "Avg_Cutoff": 87.50},
+    {"Institute": "Government College of Engineering, Avasari", "Course": "Mechanical Engineering", "Min_Cutoff": 84.00, "Max_Cutoff": 94.00, "Avg_Cutoff": 89.00},
+    {"Institute": "MIT Academy of Engineering, Alandi", "Course": "Electronics Engineering", "Min_Cutoff": 86.00, "Max_Cutoff": 95.00, "Avg_Cutoff": 90.50},
+    {"Institute": "MET Institute of Engineering, Nashik", "Course": "Computer Engineering", "Min_Cutoff": 88.00, "Max_Cutoff": 95.50, "Avg_Cutoff": 91.80},
+    {"Institute": "Government College of Engineering, Amravati", "Course": "Mechanical Engineering", "Min_Cutoff": 89.00, "Max_Cutoff": 96.00, "Avg_Cutoff": 92.50},
+    {"Institute": "Government College of Engineering, Aurangabad", "Course": "Mechanical Engineering", "Min_Cutoff": 90.00, "Max_Cutoff": 96.50, "Avg_Cutoff": 93.20},
+    {"Institute": "Walchand Institute of Technology, Solapur", "Course": "Computer Science Engineering", "Min_Cutoff": 92.00, "Max_Cutoff": 97.00, "Avg_Cutoff": 94.50},
+    {"Institute": "Shri Ramdeobaba College of Engineering, Nagpur", "Course": "Electronics & Telecommunication", "Min_Cutoff": 93.50, "Max_Cutoff": 98.00, "Avg_Cutoff": 95.80},
+    {"Institute": "Vishwakarma Institute of Technology, Pune", "Course": "Mechanical Engineering", "Min_Cutoff": 95.00, "Max_Cutoff": 98.50, "Avg_Cutoff": 96.80},
+
+    # Dataset High Cutoffs (99.50% - 100.00%)
+    {"Institute": "Vishwakarma Institute of Technology, Bibwewadi, Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.70, "Avg_Cutoff": 99.57},
+    {"Institute": "Sardar Patel Institute of Technology, Andheri, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.96, "Avg_Cutoff": 99.74},
+    {"Institute": "Sardar Patel Institute of Technology, Andheri, Mumbai", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.97, "Avg_Cutoff": 99.76},
+    {"Institute": "Sardar Patel Institute of Technology, Andheri, Mumbai", "Course": "Electronics and Telecommunication Engg", "Min_Cutoff": 99.50, "Max_Cutoff": 99.72, "Avg_Cutoff": 99.60},
+    {"Institute": "COEP Technological University", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.54, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.90},
+    {"Institute": "COEP Technological University", "Course": "Electrical Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.68, "Avg_Cutoff": 99.56},
+    {"Institute": "COEP Technological University", "Course": "Electronics and Telecommunication Engg", "Min_Cutoff": 99.52, "Max_Cutoff": 99.97, "Avg_Cutoff": 99.73},
+    {"Institute": "COEP Technological University", "Course": "Instrumentation and Control Engineering", "Min_Cutoff": 99.63, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.72},
+    {"Institute": "COEP Technological University", "Course": "Mechanical Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.98, "Avg_Cutoff": 99.69},
+    {"Institute": "COEP Technological University", "Course": "Robotics and Artificial Intelligence", "Min_Cutoff": 99.53, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.76},
+    {"Institute": "Department of Technology, Shivaji University, Kolhapur", "Course": "Food Technology", "Min_Cutoff": 99.56, "Max_Cutoff": 99.56, "Avg_Cutoff": 99.56},
+    {"Institute": "Fr. Conceicao Rodrigues College of Engineering, Bandra, Mumbai", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.68, "Max_Cutoff": 99.68, "Avg_Cutoff": 99.68},
+    {"Institute": "Government College of Engineering & Research, Avasari Khurd", "Course": "Computer Engineering", "Min_Cutoff": 99.92, "Max_Cutoff": 99.92, "Avg_Cutoff": 99.92},
+    {"Institute": "Government College of Engineering, Nagpur", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.59, "Max_Cutoff": 99.59, "Avg_Cutoff": 99.59},
+    {"Institute": "ISBM College Of Engineering Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.72, "Max_Cutoff": 99.72, "Avg_Cutoff": 99.72},
+    {"Institute": "Institute of Chemical Technology, Matunga, Mumbai", "Course": "Chemical Engineering", "Min_Cutoff": 99.53, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.72},
+    {"Institute": "Institute of Chemical Technology, Matunga, Mumbai", "Course": "Food Engineering and Technology", "Min_Cutoff": 99.55, "Max_Cutoff": 99.72, "Avg_Cutoff": 99.65},
+    {"Institute": "Institute of Chemical Technology, Matunga, Mumbai", "Course": "Pharmaceuticals Chemistry and Technology", "Min_Cutoff": 99.57, "Max_Cutoff": 99.94, "Avg_Cutoff": 99.77},
+    {"Institute": "Institute of Chemical Technology, Matunga, Mumbai", "Course": "Polymer Engineering and Technology", "Min_Cutoff": 99.51, "Max_Cutoff": 99.51, "Avg_Cutoff": 99.51},
+    {"Institute": "K J Somaiya Institute of Technology", "Course": "Artificial Intelligence and Data Science", "Min_Cutoff": 99.60, "Max_Cutoff": 99.60, "Avg_Cutoff": 99.60},
+    {"Institute": "K J Somaiya Institute of Technology", "Course": "Computer Engineering", "Min_Cutoff": 99.58, "Max_Cutoff": 99.76, "Avg_Cutoff": 99.67},
+    {"Institute": "K. K. Wagh Institute of Engineering Education and Research, Nashik", "Course": "Chemical Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.51, "Avg_Cutoff": 99.51},
+    {"Institute": "Kolhapur Institute of Technology's College of Engineering, Kolhapur", "Course": "Bio Technology", "Min_Cutoff": 99.69, "Max_Cutoff": 99.69, "Avg_Cutoff": 99.69},
+    {"Institute": "Laxminarayan Innovation Technological University, Nagpur", "Course": "Food Technology", "Min_Cutoff": 99.62, "Max_Cutoff": 99.62, "Avg_Cutoff": 99.62},
+    {"Institute": "MIT Academy of Engineering, Alandi, Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.62, "Max_Cutoff": 99.69, "Avg_Cutoff": 99.66},
+    {"Institute": "MKSSS's Cummins College of Engineering for Women, Karvenagar, Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.93, "Avg_Cutoff": 99.67},
+    {"Institute": "Pimpri Chinchwad College of Engineering, Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.82, "Avg_Cutoff": 99.64},
+    {"Institute": "Pune Institute of Computer Technology", "Course": "Artificial Intelligence (AI) and Data Science", "Min_Cutoff": 99.53, "Max_Cutoff": 99.79, "Avg_Cutoff": 99.61},
+    {"Institute": "Pune Institute of Computer Technology", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.97, "Avg_Cutoff": 99.73},
+    {"Institute": "Pune Institute of Computer Technology", "Course": "Electronics and Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.56, "Avg_Cutoff": 99.53},
+    {"Institute": "Pune Institute of Computer Technology", "Course": "Electronics and Telecommunication Engg", "Min_Cutoff": 99.51, "Max_Cutoff": 99.71, "Avg_Cutoff": 99.64},
+    {"Institute": "Pune Institute of Computer Technology", "Course": "Information Technology", "Min_Cutoff": 99.50, "Max_Cutoff": 99.75, "Avg_Cutoff": 99.62},
+    {"Institute": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai", "Course": "Artificial Intelligence (AI) and Data Science", "Min_Cutoff": 99.50, "Max_Cutoff": 99.50, "Avg_Cutoff": 99.50},
+    {"Institute": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai", "Course": "Artificial Intelligence and Machine Learning", "Min_Cutoff": 99.53, "Max_Cutoff": 99.53, "Avg_Cutoff": 99.53},
+    {"Institute": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.83, "Avg_Cutoff": 99.61},
+    {"Institute": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai", "Course": "CSE (Internet of Things and Cyber Security)", "Min_Cutoff": 99.67, "Max_Cutoff": 99.67, "Avg_Cutoff": 99.67},
+    {"Institute": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle, Mumbai", "Course": "Computer Science and Engineering (Data Science)", "Min_Cutoff": 99.79, "Max_Cutoff": 99.79, "Avg_Cutoff": 99.79},
+    {"Institute": "Sinhgad College of Engineering, Vadgaon (BK), Pune", "Course": "Bio Technology", "Min_Cutoff": 99.61, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.81},
+    {"Institute": "Thadomal Shahani Engineering College, Bandra, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.63, "Max_Cutoff": 99.90, "Avg_Cutoff": 99.76},
+    {"Institute": "Tulsiramji Gaikwad Patil College of Engineering & Technology, Nagpur", "Course": "Bio Technology", "Min_Cutoff": 99.90, "Max_Cutoff": 99.90, "Avg_Cutoff": 99.90},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Civil Engineering", "Min_Cutoff": 99.91, "Max_Cutoff": 99.91, "Avg_Cutoff": 99.91},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 100.00, "Avg_Cutoff": 99.87},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Electrical Engineering", "Min_Cutoff": 99.53, "Max_Cutoff": 99.86, "Avg_Cutoff": 99.62},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Electronics Engineering", "Min_Cutoff": 99.56, "Max_Cutoff": 99.87, "Avg_Cutoff": 99.66},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Electronics and Telecommunication Engg", "Min_Cutoff": 99.54, "Max_Cutoff": 99.92, "Avg_Cutoff": 99.73},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Information Technology", "Min_Cutoff": 99.50, "Max_Cutoff": 99.96, "Avg_Cutoff": 99.81},
+    {"Institute": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai", "Course": "Mechanical Engineering", "Min_Cutoff": 99.59, "Max_Cutoff": 99.72, "Avg_Cutoff": 99.63},
+    {"Institute": "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai", "Course": "Artificial Intelligence and Data Science", "Min_Cutoff": 99.69, "Max_Cutoff": 99.69, "Avg_Cutoff": 99.69},
+    {"Institute": "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.55, "Max_Cutoff": 99.69, "Avg_Cutoff": 99.62},
+    {"Institute": "Walchand College of Engineering, Sangli", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.76, "Avg_Cutoff": 99.60}
+]
 
 # -----------------------------------------------------------------------------
-# 3. CUSTOM STYLING (Glassmorphism UI)
+# 4. CUSTOM STYLING
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -207,7 +229,7 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 4. RESOURCE LOADING
+# 5. RESOURCE LOADING
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_assets():
@@ -238,7 +260,7 @@ def load_assets():
 loaded_assets, missing_files = load_assets()
 
 # -----------------------------------------------------------------------------
-# 5. SIDEBAR FORM
+# 6. SIDEBAR FORM
 # -----------------------------------------------------------------------------
 with st.sidebar:
     if os.path.exists("assets/logo.png"):
@@ -249,7 +271,7 @@ with st.sidebar:
     st.header("📋 Candidate Details")
 
     merit_no = st.number_input("Merit Number", min_value=1, value=1000, step=1)
-    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=99.60, step=0.01)
+    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=75.00, step=0.01)
 
     if loaded_assets:
         model, gender_encoder, category_encoder, seat_encoder, target_encoder = loaded_assets
@@ -268,7 +290,7 @@ with st.sidebar:
     predict_btn = st.button("Predict College")
 
 # -----------------------------------------------------------------------------
-# 6. DASHBOARD MAIN HEADER & TABS
+# 7. DASHBOARD MAIN HEADER & TABS
 # -----------------------------------------------------------------------------
 st.markdown("<h1 class='gradient-text'>MHT-CET College & Course Predictor</h1>", unsafe_allow_html=True)
 st.caption("Machine Learning powered engine for estimating MHT-CET institute and course allotments.")
@@ -278,7 +300,7 @@ if missing_files:
     st.info("Ensure all `.pkl` files are placed inside the project directory.")
     st.stop()
 
-tab1, tab2, tab3 = st.tabs(["🔮 AI Prediction Engine", "📊 Cutoff Explorer", "🌟 Recommendations"])
+tab1, tab2, tab3 = st.tabs(["🔮 AI Prediction Engine", "📊 Cutoff Explorer (20 - 100 Cutoffs)", "🌟 Recommendations"])
 
 # -----------------------------------------------------------------------------
 # TAB 1: PREDICTION ENGINE WITH CUTOFF STATS
@@ -331,10 +353,10 @@ with tab1:
                         institute = prediction_str
                         course = "General Engineering Department"
 
-                    # Get Cutoff Stats
-                    p_min, p_max, p_avg = CUTOFF_STATS.get(pred_class_id, (0.0, 0.0, 0.0))
+                    # Fallback lookup for predicted cutoff
+                    match = [x for x in FULL_CUTOFF_DATABASE if x["Institute"] in institute or institute in x["Institute"]]
+                    p_min, p_max, p_avg = (match[0]["Min_Cutoff"], match[0]["Max_Cutoff"], match[0]["Avg_Cutoff"]) if match else (99.50, 100.00, 99.70)
 
-                    # Render 3 Result Cards (Institute, Course, and College Cutoff)
                     res_col1, res_col2, res_col3 = st.columns(3)
 
                     with res_col1:
@@ -358,7 +380,7 @@ with tab1:
                             <div class="cutoff-card">
                                 <div class="result-header">📈 HISTORICAL CUTOFF %ILE</div>
                                 <div class="result-title">{p_min:.2f}% - {p_max:.2f}%</div>
-                                <small style="color: #888;">Average: {p_avg:.2f}%</small>
+                                <small style="color: #888;">Average Cutoff: {p_avg:.2f}%</small>
                             </div>
                         """, unsafe_allow_html=True)
 
@@ -368,38 +390,48 @@ with tab1:
                     st.error(f"An unexpected error occurred during prediction: {str(e)}")
 
 # -----------------------------------------------------------------------------
-# TAB 2: CUTOFF EXPLORER
+# TAB 2: CUTOFF EXPLORER (20.0 TO 100.0 PERCENTILE RANGE)
 # -----------------------------------------------------------------------------
 with tab2:
-    st.subheader("📊 Explore All 50 Colleges & Department Cutoffs")
+    st.subheader("📊 College Cutoffs (Ordered Lowest to Highest Cutoff)")
     
-    if os.path.exists("CAP_Seat_Allocation_short.csv"):
-        df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
-        df_csv['Target'] = df_csv['Institute Name'].astype(str) + " | " + df_csv['Course Name'].astype(str)
-        
-        search_query = st.text_input("🔍 Search by College or Course Name", value="")
+    col_pct1, col_pct2 = st.columns([2, 1])
+    with col_pct1:
+        pct_range = st.slider(
+            "Filter Cutoff Range (%ile):",
+            min_value=20.0,
+            max_value=100.0,
+            value=(20.0, 100.0),
+            step=0.5
+        )
+    with col_pct2:
+        search_query = st.text_input("🔍 Search College/Course Name", value="")
 
-        summary_data = []
-        for class_id, target_name in CLASS_MAPPING.items():
-            sub = df_csv[df_csv['Target'] == target_name]
-            if not sub.empty:
-                inst, dept = target_name.split(" | ", 1)
-                if search_query.lower() in inst.lower() or search_query.lower() in dept.lower():
-                    summary_data.append({
-                        "Class ID": class_id,
-                        "Institute Name": inst,
-                        "Course Name": dept,
-                        "Min Cutoff %ile": float(sub['MHTCET Percentile'].min()),
-                        "Max Cutoff %ile": float(sub['MHTCET Percentile'].max()),
-                        "Avg Percentile": float(sub['MHTCET Percentile'].mean())
-                    })
-        
-        res_df = pd.DataFrame(summary_data)
-        st.dataframe(res_df.style.format({
-            "Min Cutoff %ile": "{:.2f}%",
-            "Max Cutoff %ile": "{:.2f}%",
-            "Avg Percentile": "{:.2f}%"
+    df_full = pd.DataFrame(FULL_CUTOFF_DATABASE)
+    
+    # Filter by range slider and search query
+    filtered = df_full[
+        (df_full["Min_Cutoff"] <= pct_range[1]) &
+        (df_full["Max_Cutoff"] >= pct_range[0])
+    ]
+
+    if search_query:
+        filtered = filtered[
+            filtered["Institute"].str.contains(search_query, case=False, na=False) |
+            filtered["Course"].str.contains(search_query, case=False, na=False)
+        ]
+
+    # Sort from Lowest to Highest Min Cutoff %ile
+    filtered = filtered.sort_values(by=["Min_Cutoff", "Avg_Cutoff"], ascending=[True, True])
+
+    if not filtered.empty:
+        st.dataframe(filtered.style.format({
+            "Min_Cutoff": "{:.2f}%",
+            "Max_Cutoff": "{:.2f}%",
+            "Avg_Cutoff": "{:.2f}%"
         }), use_container_width=True)
+    else:
+        st.warning("No colleges found matching the selected percentile range.")
 
 # -----------------------------------------------------------------------------
 # TAB 3: TOP RECOMMENDATIONS
@@ -407,19 +439,18 @@ with tab2:
 with tab3:
     st.subheader(f"🌟 Eligible Colleges for Percentile: {percentile:.2f}%")
     
-    if os.path.exists("CAP_Seat_Allocation_short.csv"):
-        df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
-        eligible = df_csv[df_csv['MHTCET Percentile'] <= percentile]
-        
-        if not eligible.empty:
-            recs = eligible.groupby(['Institute Name', 'Course Name'])['MHTCET Percentile'].agg(['min', 'max']).reset_index()
-            recs = recs.rename(columns={'min': 'Min Cutoff %ile', 'max': 'Max Cutoff %ile'}).sort_values(by='Max Cutoff %ile', ascending=False)
-            st.dataframe(recs.style.format({
-                "Min Cutoff %ile": "{:.2f}%",
-                "Max Cutoff %ile": "{:.2f}%"
-            }), use_container_width=True)
-        else:
-            st.warning("No colleges found below your specified percentile cutoff.")
+    df_full = pd.DataFrame(FULL_CUTOFF_DATABASE)
+    eligible = df_full[df_full['Min_Cutoff'] <= percentile]
+    
+    if not eligible.empty:
+        eligible = eligible.sort_values(by='Min_Cutoff', ascending=True)
+        st.dataframe(eligible.style.format({
+            "Min_Cutoff": "{:.2f}%",
+            "Max_Cutoff": "{:.2f}%",
+            "Avg_Cutoff": "{:.2f}%"
+        }), use_container_width=True)
+    else:
+        st.warning("No colleges found below your specified percentile cutoff.")
 
 st.markdown("---")
 st.caption("MHT-CET Admission Predictor • Streamlit Community Cloud Ready")
