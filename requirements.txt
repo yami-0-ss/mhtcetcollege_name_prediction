@@ -1,6 +1,7 @@
-Flask
-gunicorn
-numpy
-pandas
+streamlit
 scikit-learn
+pandas
+numpy
 joblib
+Pillow
+streamlit-lottie
