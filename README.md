@@ -1,2 +1,2 @@
 # mhtcetcollege_name_prediction
-https://mhtcetcollege-name-prediction.onrender.com
+https://mhtcetcollegenameprediction-f2vvvm4zahek8gcujmnrcy.streamlit.app/
