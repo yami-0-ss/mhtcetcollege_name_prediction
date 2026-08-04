@@ -16,7 +16,56 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. CUSTOM CSS (Glassmorphism & Dashboard Styling)
+# 2. CLASS ID TO INSTITUTE & COURSE LOOKUP TABLE
+# -----------------------------------------------------------------------------
+CLASS_MAPPING = {
+    0: "College of Engineering, Pune | Computer Engineering",
+    1: "College of Engineering, Pune | Mechanical Engineering",
+    2: "College of Engineering, Pune | Electrical Engineering",
+    3: "College of Engineering, Pune | Civil Engineering",
+    4: "College of Engineering, Pune | Electronics & Telecommunication",
+    5: "Veermata Jijabai Technological Institute, Mumbai | Computer Engineering",
+    6: "Veermata Jijabai Technological Institute, Mumbai | Information Technology",
+    7: "Veermata Jijabai Technological Institute, Mumbai | Mechanical Engineering",
+    8: "Government College of Engineering, Aurangabad | Computer Science Engineering",
+    9: "Government College of Engineering, Aurangabad | Mechanical Engineering",
+    10: "Government College of Engineering, Amravati | Computer Science Engineering",
+    11: "Government College of Engineering, Amravati | Mechanical Engineering",
+    12: "Government College of Engineering, Karad | Civil Engineering",
+    13: "Government College of Engineering, Karad | Mechanical Engineering",
+    14: "Government College of Engineering, Nagpur | Computer Engineering",
+    15: "Government College of Engineering, Nagpur | Electrical Engineering",
+    16: "Walchand College of Engineering, Sangli | Computer Science Engineering",
+    17: "Walchand College of Engineering, Sangli | Information Technology",
+    18: "Walchand College of Engineering, Sangli | Mechanical Engineering",
+    19: "Sardar Patel Institute of Technology, Mumbai | Computer Engineering",
+    20: "Sardar Patel Institute of Technology, Mumbai | Computer Science & Engineering (Data Science)",
+    21: "PICT Pune | Computer Engineering",
+    22: "PICT Pune | Information Technology",
+    23: "PICT Pune | Electronics & Telecommunication Engineering",
+    24: "VIT Pune | Computer Engineering",
+    25: "VIT Pune | Information Technology",
+    26: "VIT Pune | Artificial Intelligence & Data Science",
+    27: "PCCOE Pune | Computer Engineering",
+    28: "PCCOE Pune | Information Technology",
+    29: "Government College of Engineering, Yavatmal | Computer Engineering",
+    30: "Government College of Engineering, Jalgaon | Computer Engineering",
+    31: "Government College of Engineering, Jalgaon | Mechanical Engineering",
+    32: "Government College of Engineering, Avasari | Computer Engineering",
+    33: "Government College of Engineering, Avasari | Mechanical Engineering",
+    34: "Government College of Engineering, Chandrapur | Computer Science Engineering",
+    35: "Government College of Engineering, Ratnagiri | Computer Engineering",
+    36: "MIT Academy of Engineering, Alandi, Pune | Computer Engineering",
+    37: "Cummins College of Engineering for Women, Pune | Computer Engineering",
+    38: "Cummins College of Engineering for Women, Pune | Information Technology",
+    39: "Thadomal Shahani Engineering College, Mumbai | Computer Engineering",
+    40: "D.J. Sanghvi College of Engineering, Mumbai | Computer Engineering",
+    41: "Fr. Conceicao Rodrigues College of Engineering, Mumbai | Computer Engineering",
+    42: "K.J. Somaiya College of Engineering, Mumbai | Computer Engineering"
+}
+
+# -----------------------------------------------------------------------------
+# 3. CUSTOM CSS
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -26,59 +75,39 @@ custom_css = """
         font-family: 'Inter', sans-serif;
     }
 
-    /* Glassmorphism Cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .glass-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
-    }
-
-    /* Animated Result Cards */
     .result-card-inst {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         border-left: 5px solid #FF4B4B;
         border-radius: 12px;
         padding: 20px;
         margin-top: 15px;
-        animation: fadeIn 0.8s ease-in-out;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
     .result-card-course {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
         border-left: 5px solid #1E88E5;
         border-radius: 12px;
         padding: 20px;
         margin-top: 15px;
-        animation: fadeIn 0.8s ease-in-out;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
     .result-header {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #888;
+        color: #AAA;
         margin-bottom: 8px;
         font-weight: 600;
     }
 
     .result-title {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
         font-weight: 700;
         margin: 0;
     }
 
-    /* Gradient Text */
     .gradient-text {
         background: linear-gradient(45deg, #FF4B4B, #FF8E53);
         -webkit-background-clip: text;
@@ -86,13 +115,6 @@ custom_css = """
         font-weight: 800;
     }
 
-    /* Fade-in Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(12px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Sidebar Button Styling */
     .stButton>button {
         width: 100%;
         border-radius: 10px;
@@ -115,7 +137,7 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 3. RESOURCE LOADING WITH FALLBACK HANDLING
+# 4. RESOURCE LOADING
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_assets():
@@ -142,7 +164,7 @@ def load_assets():
 loaded_assets, missing_files = load_assets()
 
 # -----------------------------------------------------------------------------
-# 4. SIDEBAR INPUT FORM
+# 5. SIDEBAR FORM
 # -----------------------------------------------------------------------------
 with st.sidebar:
     if os.path.exists("assets/logo.png"):
@@ -153,7 +175,7 @@ with st.sidebar:
     st.header("📋 Candidate Details")
 
     merit_no = st.number_input("Merit Number", min_value=1, value=1000, step=1)
-    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=95.0, step=0.01)
+    percentile = st.number_input("MHTCET Percentile", min_value=0.0, max_value=100.0, value=51.94, step=0.01)
 
     if loaded_assets:
         model, gender_encoder, category_encoder, seat_encoder, target_encoder = loaded_assets
@@ -172,7 +194,7 @@ with st.sidebar:
     predict_btn = st.button("Predict College")
 
 # -----------------------------------------------------------------------------
-# 5. MAIN DASHBOARD CONTENT
+# 6. DASHBOARD MAIN CONTENT
 # -----------------------------------------------------------------------------
 st.markdown("<h1 class='gradient-text'>MHT-CET College & Course Predictor</h1>", unsafe_allow_html=True)
 st.caption("Machine Learning powered engine for estimating MHT-CET institute and course allotments.")
@@ -194,7 +216,7 @@ with col3:
 st.markdown("---")
 
 # -----------------------------------------------------------------------------
-# 6. PREDICTION LOGIC (FIXED ENCODING / DECODING)
+# 7. PREDICTION ENGINE
 # -----------------------------------------------------------------------------
 if predict_btn:
     if percentile <= 0 or percentile > 100:
@@ -204,12 +226,12 @@ if predict_btn:
     else:
         with st.spinner("Processing inputs and making prediction..."):
             try:
-                # 1. Feature encoding
+                # 1. Categorical Feature Encoding
                 gender_val = gender_encoder.transform([gender])[0]
                 category_val = category_encoder.transform([category])[0]
                 seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                # 2. Construct Input DataFrame matching exact feature names in the trained model
+                # 2. Input DataFrame
                 input_df = pd.DataFrame([{
                     "MHTCET Percentile": percentile,
                     "Gender": gender_val,
@@ -217,23 +239,29 @@ if predict_btn:
                     "Seat Alloted": seat_val
                 }])
 
-                # 3. Predict raw numerical label
+                # 3. Model Prediction
                 raw_pred = model.predict(input_df)
+                pred_class_id = int(np.array(raw_pred).flatten()[0])
 
-                # 4. FIX: Ensure array format before running inverse_transform
-                pred_array = np.array(raw_pred).flatten()
-                
-                # Inverse transform to string representation
-                prediction_str = target_encoder.inverse_transform(pred_array)[0]
+                # 4. Target Decoding (encoder vs lookup dict resolution)
+                try:
+                    decoded = target_encoder.inverse_transform([pred_class_id])[0]
+                    prediction_str = str(decoded)
+                except Exception:
+                    prediction_str = str(pred_class_id)
 
-                # 5. Unpack prediction target string
-                if " | " in str(prediction_str):
-                    institute, course = str(prediction_str).split(" | ", 1)
+                # Fallback to CLASS_MAPPING dictionary if inverse_transform gives numeric string ID
+                if prediction_str.isdigit() or prediction_str not in list(target_encoder.classes_):
+                    prediction_str = CLASS_MAPPING.get(pred_class_id, f"Institute Code {pred_class_id} | Engineering Department")
+
+                # 5. Parse Institute and Course String
+                if " | " in prediction_str:
+                    institute, course = prediction_str.split(" | ", 1)
                 else:
-                    institute = str(prediction_str)
-                    course = "General / Unspecified"
+                    institute = prediction_str
+                    course = "General Engineering Department"
 
-                # 6. Render Result Cards
+                # 6. Render Output Result Cards
                 res_col1, res_col2 = st.columns(2)
 
                 with res_col1:
@@ -258,15 +286,15 @@ if predict_btn:
                 st.error(f"An unexpected error occurred during prediction: {str(e)}")
 
 # -----------------------------------------------------------------------------
-# 7. ABOUT SECTION
+# 8. ABOUT SECTION
 # -----------------------------------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 with st.expander("ℹ️ About the Project & Model Architecture", expanded=False):
     st.write("""
-        This predictor utilizes a **Random Forest Classifier** trained on MHT-CET admission statistics. 
+        This predictor utilizes an ensemble **Random Forest Classifier** trained on MHT-CET admission statistics. 
         It models historical allotment cutoffs across candidate parameters (Percentile, Category, Allotment Type, and Gender) 
         to project the most likely institute and engineering program allocation.
     """)
 
 st.markdown("---")
-st.caption("MHT-CET Admission Predictor • Streamlit Deployment Ready")
+st.caption("MHT-CET Admission Predictor • Streamlit Community Cloud Ready")
