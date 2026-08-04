@@ -179,7 +179,7 @@ st.caption("Machine Learning powered engine for estimating MHT-CET institute and
 
 if missing_files:
     st.error(f"⚠️ Missing required model/encoder files in root directory: `{', '.join(missing_files)}`")
-    st.info("Ensure all `.pkl` files are placed inside the `CollegePredictor/` project directory.")
+    st.info("Ensure all `.pkl` files are placed inside the project directory.")
     st.stop()
 
 # Overview Metrics
@@ -194,7 +194,7 @@ with col3:
 st.markdown("---")
 
 # -----------------------------------------------------------------------------
-# 6. PREDICTION LOGIC
+# 6. PREDICTION LOGIC (FIXED ENCODING / DECODING)
 # -----------------------------------------------------------------------------
 if predict_btn:
     if percentile <= 0 or percentile > 100:
@@ -204,12 +204,12 @@ if predict_btn:
     else:
         with st.spinner("Processing inputs and making prediction..."):
             try:
-                # Feature encoding
+                # 1. Feature encoding
                 gender_val = gender_encoder.transform([gender])[0]
                 category_val = category_encoder.transform([category])[0]
                 seat_val = seat_encoder.transform([seat_alloted])[0]
 
-                # Construct input DataFrame with exact features expected by model
+                # 2. Construct Input DataFrame matching exact feature names in the trained model
                 input_df = pd.DataFrame([{
                     "MHTCET Percentile": percentile,
                     "Gender": gender_val,
@@ -217,18 +217,23 @@ if predict_btn:
                     "Seat Alloted": seat_val
                 }])
 
-                # Inference
+                # 3. Predict raw numerical label
                 raw_pred = model.predict(input_df)
-                prediction_str = target_encoder.inverse_transform(raw_pred)[0]
 
-                # Unpack prediction target string
-                if " | " in prediction_str:
-                    institute, course = prediction_str.split(" | ", 1)
+                # 4. FIX: Ensure array format before running inverse_transform
+                pred_array = np.array(raw_pred).flatten()
+                
+                # Inverse transform to string representation
+                prediction_str = target_encoder.inverse_transform(pred_array)[0]
+
+                # 5. Unpack prediction target string
+                if " | " in str(prediction_str):
+                    institute, course = str(prediction_str).split(" | ", 1)
                 else:
-                    institute = prediction_str
+                    institute = str(prediction_str)
                     course = "General / Unspecified"
 
-                # Render Result Cards
+                # 6. Render Result Cards
                 res_col1, res_col2 = st.columns(2)
 
                 with res_col1:
@@ -264,4 +269,4 @@ with st.expander("ℹ️ About the Project & Model Architecture", expanded=False
     """)
 
 st.markdown("---")
-st.caption("MHT-CET Admission Predictor • Ready for Streamlit Community Cloud")
+st.caption("MHT-CET Admission Predictor • Streamlit Deployment Ready")
