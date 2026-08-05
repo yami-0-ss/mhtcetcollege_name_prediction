@@ -4,6 +4,27 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+# 1. Load dataset
+df = pd.read_csv("CAP_Seat_Allocation_short.csv")
+
+# 2. Combine Institute and Course names to create the Target column
+df["Target"] = df["Institute Name"] + " | " + df["Course Name"]
+
+# 3. Fit LabelEncoders on categorical columns
+gender_encoder = LabelEncoder().fit(df["Gender"])
+category_encoder = LabelEncoder().fit(df["Category"])
+seat_encoder = LabelEncoder().fit(df["Seat Alloted"])
+target_encoder = LabelEncoder().fit(df["Target"])
+
+# 4. Save the fitted encoders to pickle files
+joblib.dump(gender_encoder, "gender_encoder.pkl")
+joblib.dump(category_encoder, "category_encoder.pkl")
+joblib.dump(seat_encoder, "seat_encoder.pkl")
+joblib.dump(target_encoder, "target_encoder.pkl")
+
+print(
+    "✅ Success: gender_encoder.pkl, category_encoder.pkl, seat_encoder.pkl, and target_encoder.pkl created!"
+)
 # -----------------------------------------------------------------------------
 # 1. PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
