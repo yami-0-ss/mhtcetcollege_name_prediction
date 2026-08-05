@@ -1,13 +1,11 @@
-# app.py
 import os
 import joblib
-import pandas as pd
 import numpy as np
+import pandas as pd
 import streamlit as st
-from PIL import Image
 
 # -----------------------------------------------------------------------------
-# 1. PAGE CONFIGURATION & INITIAL SETUP
+# 1. PAGE CONFIGURATION
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="MHT-CET College & Course Predictor",
@@ -17,7 +15,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. CUSTOM CSS (Glassmorphism, Animations, Theme Styles)
+# 2. CUSTOM CSS (Glassmorphism & Custom Styling)
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -27,7 +25,7 @@ html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
 }
 
-/* Gradient Background */
+/* Animated Gradient Background */
 .stApp {
     background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #0f172a);
     background-size: 400% 400%;
@@ -41,7 +39,7 @@ html, body, [class*="css"] {
     100% { background-position: 0% 50%; }
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism Styling */
 .glass-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
@@ -60,7 +58,7 @@ html, body, [class*="css"] {
     border: 1px solid rgba(129, 140, 248, 0.3);
 }
 
-/* Result Cards Specific Gradient Border */
+/* Result Cards Specific Gradient Borders */
 .result-card-inst {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
     border-left: 6px solid #6366f1;
@@ -71,9 +69,9 @@ html, body, [class*="css"] {
     border-left: 6px solid #10b981;
 }
 
-/* Hero Title Styling */
+/* Title & Subtitle Styling */
 .hero-title {
-    font-size: 2.8rem;
+    font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(to right, #818cf8, #c084fc, #38bdf8);
     -webkit-background-clip: text;
@@ -87,7 +85,7 @@ html, body, [class*="css"] {
     margin-bottom: 2rem;
 }
 
-/* Custom Buttons */
+/* Custom Primary Button Styling */
 .stButton > button {
     width: 100%;
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
@@ -107,14 +105,13 @@ html, body, [class*="css"] {
     transform: scale(1.02);
 }
 
-/* Sidebar Styling */
+/* Sidebar Background Adjustment */
 section[data-testid="stSidebar"] {
     background-color: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(10px);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Hide Streamlit Branding */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 </style>
@@ -127,7 +124,6 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_all_artifacts():
-    """Loads model and categorical encoders safely."""
     files = {
         "model": "collegename_model.pkl",
         "gender": "gender_encoder.pkl",
@@ -135,7 +131,7 @@ def load_all_artifacts():
         "seat": "seat_encoder.pkl",
         "target": "target_encoder.pkl",
     }
-    
+
     artifacts = {}
     missing_files = []
 
@@ -152,7 +148,9 @@ artifacts, missing = load_all_artifacts()
 
 if missing:
     st.error(f"❌ Missing required model files: {', '.join(missing)}")
-    st.info("Please ensure all `.pkl` files are located in the project root directory.")
+    st.info(
+        "Please place all required `.pkl` files into the root project directory and restart."
+    )
     st.stop()
 
 model = artifacts["model"]
@@ -163,7 +161,7 @@ target_encoder = artifacts["target"]
 
 
 # -----------------------------------------------------------------------------
-# 4. SIDEBAR - USER INPUTS & LOGO
+# 4. SIDEBAR - INPUT CONTROLS
 # -----------------------------------------------------------------------------
 with st.sidebar:
     if os.path.exists("assets/logo.png"):
@@ -171,8 +169,8 @@ with st.sidebar:
     else:
         st.markdown("## 🎯 MHT-CET Predictor")
 
-    st.markdown("### 📋 Enter Candidate Details")
-    st.caption("Provide exact merit and category details for higher accuracy.")
+    st.markdown("### 📋 Student Credentials")
+    st.caption("Provide exact candidate merit details for precise allocation.")
 
     merit_number = st.number_input(
         "Merit Number",
@@ -180,7 +178,7 @@ with st.sidebar:
         max_value=300000,
         value=5000,
         step=1,
-        help="Enter your state-level merit rank.",
+        help="Enter your state rank from your MHT-CET score report.",
     )
 
     percentile = st.number_input(
@@ -190,10 +188,10 @@ with st.sidebar:
         value=98.50,
         step=0.01,
         format="%.2f",
-        help="Enter overall percentile score.",
+        help="Enter overall MHT-CET percentile score.",
     )
 
-    # Extract encoder classes safely
+    # Load encoder option classes dynamically
     gender_options = list(gender_encoder.classes_)
     category_options = list(category_encoder.classes_)
     seat_options = list(seat_encoder.classes_)
@@ -202,74 +200,79 @@ with st.sidebar:
     category = st.selectbox("Category", options=category_options)
     seat_alloted = st.selectbox("Seat Allotted Type", options=seat_options)
 
-    predict_btn = st.button("✨ Predict College & Course")
+    predict_btn = st.button("Predict College")
 
 
 # -----------------------------------------------------------------------------
-# 5. MAIN CONTENT - HERO & DASHBOARD
+# 5. DASHBOARD MAIN HEADER
 # -----------------------------------------------------------------------------
-st.markdown('<div class="hero-title">MHT-CET Admission Predictor</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="hero-subtitle">Machine Learning-Powered College & Branch Seat Allocation Insights</div>',
+    '<div class="hero-title">AI-Based MHT-CET College & Course Predictor</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="hero-subtitle">Machine Learning Powered Engineering Seat Allotment Analytics</div>',
     unsafe_allow_html=True,
 )
 
-# Top Metrics Banner
-col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-with col_m1:
-    st.metric(label="Model Architecture", value="Random Forest")
-with col_m2:
+# Metric Summary Cards
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric(label="Algorithm", value="Random Forest")
+with col2:
     st.metric(label="Selected Percentile", value=f"{percentile:.2f}%")
-with col_m3:
-    st.metric(label="Selected Category", value=str(category))
-with col_m4:
+with col3:
+    st.metric(label="Category", value=str(category))
+with col4:
     st.metric(label="Merit Rank", value=f"#{merit_number}")
 
 st.markdown("---")
 
+
 # -----------------------------------------------------------------------------
-# 6. PREDICTION LOGIC & RESULT DISPLAY
+# 6. PREDICTION INFERENCE & RESULT DISPLAY
 # -----------------------------------------------------------------------------
 if predict_btn:
-    # Input Validation
+    # Validate inputs
     if percentile < 0.0 or percentile > 100.0:
-        st.error("⚠️ Invalid Percentile entered. Please enter a value between 0.00 and 100.00.")
+        st.error("⚠️ Invalid percentile score! Enter a value between 0.0 and 100.0.")
     elif merit_number <= 0:
-        st.error("⚠️ Merit Number must be greater than zero.")
+        st.error("⚠️ Merit number must be greater than zero.")
     else:
         try:
-            with st.spinner("🔍 Analyzing cutoffs and matching institutes..."):
-                # Encode Categorical Variables
-                gender_enc = gender_encoder.transform([gender])[0]
-                category_enc = category_encoder.transform([category])[0]
-                seat_enc = seat_encoder.transform([seat_alloted])[0]
+            with st.spinner("🔍 Matching cutoffs and predicting college..."):
+                # Encode input categorical values
+                gender_encoded = gender_encoder.transform([gender])[0]
+                category_encoded = category_encoder.transform([category])[0]
+                seat_encoded = seat_encoder.transform([seat_alloted])[0]
 
-                # Prepare feature array matching model's expected features
-                # Order: [Merit Number, MHTCET Percentile, Gender, Category, Seat Alloted]
-                features = np.array([[merit_number, percentile, gender_enc, category_enc, seat_enc]])
+                # Features shape: [MHTCET Percentile, Gender, Category, Seat Alloted]
+                input_features = np.array(
+                    [[percentile, gender_encoded, category_encoded, seat_encoded]]
+                )
 
-                # Predict
-                pred_encoded = model.predict(features)
-                prediction_str = target_encoder.inverse_transform(pred_encoded)[0]
+                # Make prediction and inverse transform label
+                pred = model.predict(input_features)
+                prediction = target_encoder.inverse_transform(pred)[0]
 
-                # Split target string
-                if " | " in prediction_str:
-                    institute, course = prediction_str.split(" | ", 1)
+                # Separate Institute Name and Course Name
+                if " | " in prediction:
+                    institute, course = prediction.split(" | ", 1)
                 else:
-                    institute = prediction_str
-                    course = "General / Unspecified Branch"
+                    institute = prediction
+                    course = "Unspecified Branch"
 
-            # Display Results Cards
-            st.markdown("### 🎯 Predicted Allocation")
-            
+            # Display prediction result cards
+            st.markdown("### 🎓 Allocation Result")
+
             res_col1, res_col2 = st.columns(2)
-            
+
             with res_col1:
                 st.markdown(
                     f"""
                     <div class="glass-card result-card-inst">
-                        <p style="color: #818cf8; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">🎓 PREDICTED INSTITUTE</p>
-                        <h3 style="color: #ffffff; margin: 0; font-size: 1.3rem;">{institute}</h3>
+                        <p style="color: #818cf8; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">🎓 PREDICTED INSTITUTE</p>
+                        <h3 style="color: #ffffff; margin: 0; font-size: 1.25rem;">{institute}</h3>
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -279,83 +282,79 @@ if predict_btn:
                 st.markdown(
                     f"""
                     <div class="glass-card result-card-course">
-                        <p style="color: #34d399; font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">📚 PREDICTED COURSE / BRANCH</p>
-                        <h3 style="color: #ffffff; margin: 0; font-size: 1.3rem;">{course}</h3>
+                        <p style="color: #34d399; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px;">📚 PREDICTED COURSE</p>
+                        <h3 style="color: #ffffff; margin: 0; font-size: 1.25rem;">{course}</h3>
                     </div>
                     """,
                     unsafe_allow_html=True,
                 )
 
-            st.success("✅ Seat allocation prediction generated successfully!")
+            st.success("✅ Prediction calculated successfully!")
 
         except Exception as e:
-            st.error(f"⚠️ An error occurred during prediction: {str(e)}")
-            st.caption("Please verify that categorical values match the trained encoder labels.")
+            st.error(f"⚠️ Error performing prediction: {str(e)}")
+            st.caption(
+                "Ensure that selected values match the trained encoder classes."
+            )
 
 # -----------------------------------------------------------------------------
-# 7. ABOUT & FEATURE HIGHLIGHTS SECTION
+# 7. FEATURE HIGHLIGHTS & ABOUT SECTION
 # -----------------------------------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("### 💡 Platform Capabilities")
+st.markdown("### 💡 Model & Platform Overview")
 
-feat_col1, feat_col2, feat_col3 = st.columns(3)
+f1, f2, f3 = st.columns(3)
 
-with feat_col1:
+with f1:
     st.markdown(
         """
         <div class="glass-card">
-            <h4>⚡ Machine Learning</h4>
+            <h4>⚡ Ensemble Model</h4>
             <p style="color: #94a3b8; font-size: 0.9rem;">
-                Powered by an ensemble <b>RandomForestClassifier</b> trained on past MHT-CET CAP round allotment datasets.
+                Trained on official CAP round historical seat allotment data using a multi-class RandomForestClassifier.
             </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-with feat_col2:
+with f2:
     st.markdown(
         """
         <div class="glass-card">
-            <h4>🎯 Multi-Feature Matching</h4>
+            <h4>🎯 Multi-Category Support</h4>
             <p style="color: #94a3b8; font-size: 0.9rem;">
-                Evaluates complex relationships across Percentiles, Merit Ranks, Gender, Categories, and Seat Allotment Types.
+                Considers seat allotment categories (OPEN, OBC, SC, ST, EWS, TFWS) and gender reservation criteria.
             </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-with feat_col3:
+with f3:
     st.markdown(
         """
         <div class="glass-card">
-            <h4>🛡️ Robust Validation</h4>
+            <h4>🛡️ Fault Tolerant</h4>
             <p style="color: #94a3b8; font-size: 0.9rem;">
-                Built-in input validation and safe label encoding prevent system runtime crashes during deployment.
+                Includes robust exception handling, dynamic encoder options, and safe input verification.
             </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-# Expander for additional project details
-with st.expander("ℹ️ About the Project & Model Architecture"):
+with st.expander("ℹ️ Project Architecture Details"):
     st.write(
         """
-        This intelligent predictor analyzes historical CAP round seat allotment data for engineering colleges under MHT-CET. 
-        By framing college name and branch as a combined target variable (`Institute | Course`), the multi-class model 
-        provides holistic allocations based on candidate merit profiles.
-        
-        * **Framework:** Scikit-Learn Ensemble Learning
-        * **Model Type:** Random Forest Classifier
-        * **Target:** Combined Target Vector (`Institute Name | Course Name`)
+        * **Target Combination:** `df["Target"] = df["Institute Name"] + " | " + df["Course Name"]`
+        * **Inference Pipeline:** Inputs are encoded with `LabelEncoder` pickles before passing to `collegename_model.pkl`.
+        * **Outputs:** Decoded target strings are split using `prediction.split(" | ")` to populate the result cards.
         """
     )
 
-# Footer
 st.markdown("---")
 st.markdown(
-    '<p style="text-align: center; color: #64748b; font-size: 0.85rem;">MHT-CET College Predictor Dashboard | Designed for Streamlit Cloud Deployment</p>',
+    '<p style="text-align: center; color: #64748b; font-size: 0.85rem;">MHT-CET College & Course Predictor Dashboard</p>',
     unsafe_allow_html=True,
 )
