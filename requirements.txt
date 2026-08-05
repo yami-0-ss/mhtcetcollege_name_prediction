@@ -1,8 +1,6 @@
 streamlit
-scikit-learn
 pandas
 numpy
-joblib
-Pillow
-streamlit-option-menu
-streamlit-lottie
+scikit-learn
+pickle-mixin
+openpyxl
