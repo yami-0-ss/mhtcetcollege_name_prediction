@@ -8,7 +8,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import LabelEncoder
 
 # ==========================================
-# 1. PAGE CONFIG & NEW VIBRANT DARK STYLING
+# 1. PAGE CONFIG & REDESIGNED SIDEBAR / THEME
 # ==========================================
 st.set_page_config(
     page_title="College Admission Analytics",
@@ -20,14 +20,14 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* 1. Canvas & Background (Deep Violet / Obsidian) */
+    /* 1. Canvas & Background (Deep Cyber Teal & Obsidian) */
     header[data-testid="stHeader"] {
-        background-color: #0b071a !important;
+        background-color: #040d1a !important;
     }
     
     .stApp {
-        background-color: #0b071a !important;
-        color: #f3f4f6 !important;
+        background-color: #040d1a !important;
+        color: #f1f5f9 !important;
     }
 
     .block-container {
@@ -40,21 +40,21 @@ st.markdown(
     label, p, span, h1, h2, h3, h4, h5, h6, 
     div[data-testid="stWidgetLabel"] label, 
     div[data-testid="stMarkdownContainer"] p {
-        color: #f3f4f6 !important;
+        color: #f1f5f9 !important;
         font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
 
     .stCaption, p.caption, div[data-testid="stCaptionContainer"] {
-        color: #a78bfa !important;
+        color: #34d399 !important;
     }
 
-    /* 3. Hero Banner (Neon Gradient: Purple to Deep Magenta) */
+    /* 3. Hero Banner (Emerald to Cyan Cyber Glow) */
     .hero-banner {
-        background: linear-gradient(135deg, #1e1b4b 0%, #31103f 100%);
+        background: linear-gradient(135deg, #064e3b 0%, #0284c7 100%);
         padding: 2.2rem 2.8rem;
         border-radius: 16px;
-        border: 1px solid #c084fc;
-        box-shadow: 0 10px 25px -5px rgba(192, 132, 252, 0.25);
+        border: 1px solid #10b981;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
         margin-bottom: 2rem;
         width: 100%;
     }
@@ -63,26 +63,26 @@ st.markdown(
         font-size: 2.3rem;
         font-weight: 800;
         margin-bottom: 0.4rem;
-        background: linear-gradient(90deg, #f43f5e 0%, #a855f7 50%, #22d3ee 100%);
+        background: linear-gradient(90deg, #34d399 0%, #38bdf8 50%, #a7f3d0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
     .hero-subtitle {
         font-size: 1rem;
-        color: #cbd5e1 !important;
+        color: #e2e8f0 !important;
         margin: 0;
     }
 
-    /* 4. Glassmorphic Result Card (Cyan to Pink Gradient Border) */
+    /* 4. Glassmorphic Result Card */
     .prediction-card {
         padding: 2rem;
-        background: linear-gradient(135deg, #2e1065 0%, #581c87 100%);
+        background: linear-gradient(135deg, #064e3b 0%, #0f766e 100%);
         border-radius: 16px;
-        box-shadow: 0 12px 30px rgba(168, 85, 247, 0.35);
+        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35);
         margin: 1rem 0 1.5rem 0;
         text-align: center;
-        border: 2px solid #ec4899;
+        border: 2px solid #34d399;
     }
 
     .prediction-label {
@@ -104,85 +104,118 @@ st.markdown(
     .prediction-dept {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #f472b6 !important;
+        color: #a7f3d0 !important;
         margin-top: 0.5rem;
     }
 
-    /* 5. Metrics Styling (Neon Emerald Accents) */
+    /* 5. Metrics Styling */
     div[data-testid="stMetric"] {
-        background: #180e29 !important;
+        background: #0b1e2d !important;
         padding: 1.2rem 1.5rem !important;
         border-radius: 12px !important;
-        border: 1px solid #7e22ce !important;
-        box-shadow: 0 4px 15px rgba(126, 34, 206, 0.25) !important;
+        border: 1px solid #059669 !important;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2) !important;
     }
 
     div[data-testid="stMetricLabel"] p {
-        color: #c084fc !important;
+        color: #6ee7b7 !important;
         font-size: 0.85rem !important;
     }
 
     div[data-testid="stMetricValue"] div {
-        color: #34d399 !important;
+        color: #38bdf8 !important;
         font-weight: 700 !important;
     }
 
-    /* 6. Refined Tabs (Magenta / Pink Active Tab) */
+    /* 6. Refined Tabs */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        border-bottom: 1px solid #581c87;
+        border-bottom: 1px solid #0f766e;
         padding-bottom: 4px;
     }
 
     .stTabs [data-baseweb="tab"] {
         height: 42px;
-        background-color: #180e29;
+        background-color: #0b1e2d;
         border-radius: 8px;
         padding: 0 18px;
         font-weight: 600;
-        color: #d8b4fe !important;
-        border: 1px solid #581c87;
+        color: #a7f3d0 !important;
+        border: 1px solid #059669;
     }
 
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(90deg, #d946ef, #8b5cf6) !important;
+        background: linear-gradient(90deg, #10b981, #0284c7) !important;
         color: #ffffff !important;
         border: none !important;
     }
 
-    /* 7. Sidebar Controls & Dynamic Inputs */
+    /* 7. REDESIGNED FLOATING CARD SIDEBAR PANEL */
     section[data-testid="stSidebar"] {
-        background-color: #120924 !important;
-        border-right: 1px solid #3b0764 !important;
+        background-color: #020813 !important;
+        border-right: 1px solid #0f766e !important;
+    }
+
+    /* Sidebar Section Cards */
+    .sidebar-card {
+        background: #0b1a2a;
+        padding: 1.2rem;
+        border-radius: 12px;
+        border-left: 4px solid #10b981;
+        border-right: 1px solid #1e3a5f;
+        border-top: 1px solid #1e3a5f;
+        border-bottom: 1px solid #1e3a5f;
+        margin-bottom: 1.2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar-header {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #38bdf8 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Custom Radio Pill Badge Buttons in Sidebar */
+    div[data-testid="stRadio"] > div {
+        background-color: #061523 !important;
+        padding: 6px;
+        border-radius: 10px;
+        border: 1px solid #0f766e;
     }
 
     div[data-baseweb="select"] > div {
-        background-color: #180e29 !important;
+        background-color: #0b1e2d !important;
         color: #ffffff !important;
-        border: 1px solid #7e22ce !important;
+        border: 1px solid #10b981 !important;
         border-radius: 8px !important;
     }
 
-    /* Button Styling (Sunset Pink-Orange Glow Gradient) */
+    /* Button Styling (Emerald Glow Gradient) */
     .stButton > button {
-        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(135deg, #10b981 0%, #0284c7 100%) !important;
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
         border-radius: 10px !important;
         border: none !important;
-        height: 3.2rem !important;
-        box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4) !important;
+        height: 3.4rem !important;
+        box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4) !important;
     }
 
     .stButton > button:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 22px rgba(236, 72, 153, 0.6) !important;
+        box-shadow: 0 6px 24px rgba(16, 185, 129, 0.6) !important;
     }
 
-    /* Progress Bar (Glow Pink to Purple Gradient) */
+    /* Progress Bar Gradient */
     .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #f43f5e, #a855f7) !important;
+        background: linear-gradient(90deg, #34d399, #38bdf8) !important;
     }
     </style>
 """,
@@ -309,16 +342,29 @@ CUTOFF_BENCHMARKS = pd.DataFrame(
 )
 
 # ==========================================
-# 3. SIDEBAR INPUTS
+# 3. REDESIGNED SIDEBAR INTERFACE
 # ==========================================
 with st.sidebar:
-    st.image(
-        "https://cdn-icons-png.flaticon.com/512/3429/3429149.png", width=55
+    st.markdown(
+        """
+        <div style="text-align: center; padding: 0.5rem 0 1rem 0;">
+            <span style="font-size: 2.5rem;">🎓</span>
+            <h2 style="margin: 0; color: #34d399 !important; font-weight: 800; font-size: 1.4rem;">PREDICTOR CONFIG</h2>
+            <p style="font-size: 0.8rem; color: #94a3b8 !important; margin: 0;">Interactive Candidate Metrics</p>
+        </div>
+    """,
+        unsafe_allow_html=True,
     )
-    st.title("Student Profile")
-    st.caption("Adjust score metrics to evaluate target probabilities.")
 
-    st.markdown("---")
+    # Card 1: Score Input
+    st.markdown(
+        """
+        <div class="sidebar-card">
+            <div class="sidebar-header">📈 Performance Score</div>
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
     percentile = st.slider(
         "MHTCET Percentile Score",
@@ -327,6 +373,16 @@ with st.sidebar:
         value=87.34,
         step=0.01,
         help="Select exact percentile obtained.",
+    )
+
+    # Card 2: Demographic Criteria
+    st.markdown(
+        """
+        <div class="sidebar-card">
+            <div class="sidebar-header">👤 Demographic Profile</div>
+        </div>
+    """,
+        unsafe_allow_html=True,
     )
 
     gender_input = st.radio(
@@ -351,9 +407,9 @@ with st.sidebar:
         ),
     )
 
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     predict_btn = st.button(
-        "⚡ Run Predictor Engine", type="primary", use_container_width=True
+        "⚡ EXECUTE PREDICTOR", type="primary", use_container_width=True
     )
 
 # ==========================================
@@ -408,7 +464,7 @@ if predict_btn:
         )
 
         st.markdown(
-            "<h3 style='color: #f3f4f6; margin-bottom: 1rem;'>📊 Admission Diagnostic Summary</h3>",
+            "<h3 style='color: #f1f5f9; margin-bottom: 1rem;'>📊 Admission Diagnostic Summary</h3>",
             unsafe_allow_html=True,
         )
 
@@ -440,7 +496,7 @@ if predict_btn:
             m4.metric("Engine Confidence", f"{top_confidence}%")
 
             st.markdown(
-                "<br><h4 style='color: #ec4899;'>🏆 Candidate College & Department Probabilities</h4>",
+                "<br><h4 style='color: #34d399;'>🏆 Candidate College & Department Probabilities</h4>",
                 unsafe_allow_html=True,
             )
 
@@ -448,7 +504,7 @@ if predict_btn:
                 col_name, col_bar = st.columns([3, 2])
                 with col_name:
                     st.markdown(
-                        f"**{row['Institute Name']}**  \n<span style='color:#c084fc; font-size:0.9rem;'>{row['Course Name']}</span>",
+                        f"**{row['Institute Name']}**  \n<span style='color:#38bdf8; font-size:0.9rem;'>{row['Course Name']}</span>",
                         unsafe_allow_html=True,
                     )
                 with col_bar:
@@ -457,11 +513,11 @@ if predict_btn:
                         text=f"{row['Probability']}% Probability",
                     )
                 st.markdown(
-                    "<hr style='margin: 0.5rem 0; border-color: #3b0764;'>",
+                    "<hr style='margin: 0.5rem 0; border-color: #0f766e;'>",
                     unsafe_allow_html=True,
                 )
 
-        # Tab 2: Score Gauge Chart (Neon Pink / Purple / Cyan Theme)
+        # Tab 2: Score Gauge Chart
         with tab_analytics:
             fig_gauge = go.Figure(
                 go.Indicator(
@@ -469,26 +525,26 @@ if predict_btn:
                     value=percentile,
                     number={
                         "suffix": "%",
-                        "font": {"size": 36, "color": "#ec4899"},
+                        "font": {"size": 36, "color": "#34d399"},
                     },
                     title={
                         "text": "Score Competitiveness Index",
-                        "font": {"size": 16, "color": "#d8b4fe"},
+                        "font": {"size": 16, "color": "#a7f3d0"},
                     },
                     gauge={
                         "axis": {
                             "range": [0, 100],
                             "tickwidth": 1,
-                            "tickcolor": "#a855f7",
+                            "tickcolor": "#10b981",
                         },
-                        "bar": {"color": "#ec4899", "thickness": 0.28},
-                        "bgcolor": "#180e29",
+                        "bar": {"color": "#34d399", "thickness": 0.28},
+                        "bgcolor": "#0b1e2d",
                         "borderwidth": 1,
-                        "bordercolor": "#7e22ce",
+                        "bordercolor": "#059669",
                         "steps": [
-                            {"range": [0, 60], "color": "#2e1065"},
-                            {"range": [60, 85], "color": "#581c87"},
-                            {"range": [85, 100], "color": "#831843"},
+                            {"range": [0, 60], "color": "#064e3b"},
+                            {"range": [60, 85], "color": "#0f766e"},
+                            {"range": [85, 100], "color": "#0284c7"},
                         ],
                     },
                 )
@@ -511,13 +567,13 @@ if predict_btn:
                     x="Category",
                     y="Median Cutoff Percentile",
                     color="Median Cutoff Percentile",
-                    color_continuous_scale="Purples",
+                    color_continuous_scale="Emrld",
                     title="State Cutoff Distribution Across Quotas",
                 )
                 fig_bar.update_layout(
                     plot_bgcolor="rgba(0,0,0,0)",
                     paper_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#d8b4fe"),
+                    font=dict(color="#a7f3d0"),
                     coloraxis_showscale=False,
                     height=300,
                 )
@@ -537,12 +593,12 @@ if predict_btn:
                     values="Count",
                     title="Matched Department Allotment Ratio",
                     hole=0.4,
-                    color_discrete_sequence=px.colors.sequential.Plasma,
+                    color_discrete_sequence=px.colors.sequential.Darkmint,
                 )
                 fig_dept.update_layout(
                     plot_bgcolor="rgba(0,0,0,0)",
                     paper_bgcolor="rgba(0,0,0,0)",
-                    font=dict(color="#d8b4fe"),
+                    font=dict(color="#a7f3d0"),
                     height=300,
                 )
                 st.plotly_chart(fig_dept, use_container_width=True)
@@ -581,7 +637,7 @@ else:
         fig_overview.update_layout(
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#d8b4fe"),
+            font=dict(color="#a7f3d0"),
             coloraxis_showscale=False,
             height=280,
         )
