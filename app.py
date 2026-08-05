@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="InsightAI Studio - College Predictor",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 st.markdown(
@@ -31,10 +31,11 @@ st.markdown(
     .block-container {
         padding-top: 1.5rem !important;
         padding-bottom: 2rem !important;
-        max-width: 95% !important;
+        max-width: 900px !important;
+        margin: 0 auto !important;
     }
 
-    /* Global Typography */
+    /* Global Typography Overrides */
     label, p, span, h1, h2, h3, h4, h5, h6, 
     div[data-testid="stWidgetLabel"] label, 
     div[data-testid="stMarkdownContainer"] p {
@@ -50,6 +51,7 @@ st.markdown(
         box-shadow: 0 10px 30px rgba(76, 29, 149, 0.4);
         margin-bottom: 1.5rem;
         width: 100%;
+        text-align: center;
     }
 
     .hero-title {
@@ -77,7 +79,27 @@ st.markdown(
         margin-bottom: 2rem;
     }
 
-    /* Colored Prediction Card */
+    /* Predictor Form Container Card */
+    .input-card {
+        background-color: #111827;
+        border: 1px solid #1f2937;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .input-header {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #ffffff !important;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Colored Prediction Result Card */
     .result-card {
         background: linear-gradient(135deg, #065f46 0%, #047857 100%);
         border: 2px solid #10b981;
@@ -116,29 +138,25 @@ st.markdown(
         border: 1px solid #059669;
     }
 
-    /* Sidebar Controls */
-    section[data-testid="stSidebar"] {
-        background-color: #060913 !important;
-        border-right: 1px solid #111827 !important;
-    }
-
+    /* Custom Input Controls */
     div[data-baseweb="select"] > div {
-        background-color: #111827 !important;
+        background-color: #1f2937 !important;
         color: #ffffff !important;
         border: 1px solid #374151 !important;
         border-radius: 8px !important;
     }
 
-    /* Action Button */
+    /* Action Button (Green Glow) */
     .stButton > button {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
         color: #ffffff !important;
         font-weight: 700 !important;
-        font-size: 0.95rem !important;
+        font-size: 1rem !important;
         border-radius: 10px !important;
         border: none !important;
-        height: 3.2rem !important;
+        height: 3.4rem !important;
         box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+        margin-top: 1rem !important;
     }
 
     .stButton > button:hover {
@@ -233,46 +251,7 @@ df_data, le_gender, le_cat = load_and_preprocess_data()
 knn_model = build_knn_model(df_data)
 
 # ==========================================
-# 3. SIDEBAR CONTROLS
-# ==========================================
-with st.sidebar:
-    st.markdown("### ⚙️ Predictor Parameters")
-    st.markdown("<hr style='border-color: #1f2937;'>", unsafe_allow_html=True)
-
-    percentile = st.slider(
-        "Percentile Score",
-        min_value=0.0,
-        max_value=100.0,
-        value=87.34,
-        step=0.01,
-    )
-
-    gender_input = st.radio(
-        "Gender", options=["Female (F)", "Male (M)"], horizontal=True
-    )
-    gender = "F" if "Female" in gender_input else "M"
-
-    available_categories = (
-        sorted(df_data["cat_clean"].unique())
-        if df_data is not None
-        else ["OPEN", "OBC", "SC", "ST"]
-    )
-    category = st.selectbox(
-        "Reservation Quota",
-        options=available_categories,
-        index=(
-            available_categories.index("OBC")
-            if "OBC" in available_categories
-            else 0
-        ),
-    )
-
-    predict_btn = st.button(
-        "⚡ Predict Allocation", type="primary", use_container_width=True
-    )
-
-# ==========================================
-# 4. MAIN PAGE CONTENT
+# 3. MAIN PAGE LAYOUT & FRONT FORM
 # ==========================================
 
 # Hero Banner
@@ -290,11 +269,56 @@ st.markdown(
 st.markdown(
     """
     <div class="welcome-bar">
-        👉 <b>Welcome!</b> Adjust your score parameters on the left sidebar and click <b>Predict Allocation</b> to view your result.
+        👉 <b>Welcome!</b> Configure your score parameters below and click <b>Predict Allocation</b> to generate your prediction.
     </div>
 """,
     unsafe_allow_html=True,
 )
+
+# FRONT PAGE PREDICTOR PANEL
+st.markdown('<div class="input-card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="input-header">⚙️ Predictor Parameters</div>',
+    unsafe_allow_html=True,
+)
+st.markdown("<hr style='border-color: #1f2937;'>", unsafe_allow_html=True)
+
+percentile = st.slider(
+    "Percentile Score",
+    min_value=0.0,
+    max_value=100.0,
+    value=48.75,
+    step=0.01,
+)
+
+gender_input = st.radio(
+    "Gender", options=["Female (F)", "Male (M)"], horizontal=True
+)
+gender = "F" if "Female" in gender_input else "M"
+
+available_categories = (
+    sorted(df_data["cat_clean"].unique())
+    if df_data is not None
+    else ["OPEN", "OBC", "SC", "ST"]
+)
+category = st.selectbox(
+    "Reservation Quota",
+    options=available_categories,
+    index=(
+        available_categories.index("OBC")
+        if "OBC" in available_categories
+        else 0
+    ),
+)
+
+predict_btn = st.button(
+    "⚡ Predict Allocation", type="primary", use_container_width=True
+)
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ==========================================
+# 4. PREDICTION INFERENCE & OUTPUT
+# ==========================================
 
 if predict_btn:
     if df_data is not None and knn_model is not None:
@@ -310,7 +334,7 @@ if predict_btn:
         predicted_college = top_match["Institute Name"]
         predicted_department = top_match["Course Name"]
 
-        # DIRECT PREDICTION RESULT
+        # DIRECT PREDICTION RESULT CARD
         st.markdown(
             f"""
             <div class="result-card">
