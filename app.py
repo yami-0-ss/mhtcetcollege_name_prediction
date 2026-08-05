@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from PIL import Image
+from sklearn.preprocessing import LabelEncoder
 
 # -----------------------------------------------------------------------------
 # 1. PAGE CONFIGURATION
@@ -16,7 +17,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. EXACT 50 TARGET CLASS MAPPINGS (FROM DATASET)
+# 2. EXACT 50 TARGET CLASS MAPPINGS (FROM CAP_Seat_Allocation_short.csv)
 # -----------------------------------------------------------------------------
 CLASS_MAPPING = {
     0: "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune | Computer Engineering",
@@ -72,7 +73,7 @@ CLASS_MAPPING = {
 }
 
 # -----------------------------------------------------------------------------
-# 3. LOWER & HIGHER CUTOFF LIST (20.00% to 100.00%)
+# 3. FULL CUTOFF DATABASE (20.00% to 100.00%)
 # -----------------------------------------------------------------------------
 FULL_CUTOFF_DATABASE = [
     # Lower Cutoffs (20% - 95%)
@@ -94,7 +95,7 @@ FULL_CUTOFF_DATABASE = [
     {"Institute": "Shri Ramdeobaba College of Engineering, Nagpur", "Course": "Electronics & Telecommunication", "Min_Cutoff": 93.50, "Max_Cutoff": 98.00, "Avg_Cutoff": 95.80},
     {"Institute": "Vishwakarma Institute of Technology, Pune", "Course": "Mechanical Engineering", "Min_Cutoff": 95.00, "Max_Cutoff": 98.50, "Avg_Cutoff": 96.80},
 
-    # Dataset High Cutoffs (99.50% - 100.00%)
+    # Dataset Cutoffs (99.50% - 100.00%)
     {"Institute": "Vishwakarma Institute of Technology, Bibwewadi, Pune", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.70, "Avg_Cutoff": 99.57},
     {"Institute": "Sardar Patel Institute of Technology, Andheri, Mumbai", "Course": "Computer Engineering", "Min_Cutoff": 99.50, "Max_Cutoff": 99.96, "Avg_Cutoff": 99.74},
     {"Institute": "Sardar Patel Institute of Technology, Andheri, Mumbai", "Course": "Computer Science and Engineering", "Min_Cutoff": 99.51, "Max_Cutoff": 99.97, "Avg_Cutoff": 99.76},
@@ -148,7 +149,7 @@ FULL_CUTOFF_DATABASE = [
 ]
 
 # -----------------------------------------------------------------------------
-# 4. CUSTOM STYLING
+# 4. CUSTOM STYLING (Glassmorphism UI)
 # -----------------------------------------------------------------------------
 custom_css = """
 <style>
@@ -229,32 +230,45 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 5. RESOURCE LOADING
+# 5. RESOURCE LOADING WITH AUTOMATIC ENCODER GENERATION FALLBACK
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_assets():
     model_file = "collegename_model_3.pkl" if os.path.exists("collegename_model_3.pkl") else (
         "collegename_model_2.pkl" if os.path.exists("collegename_model_2.pkl") else "collegename_model.pkl"
     )
-    
-    files = {
-        "model": model_file,
-        "gender": "gender_encoder.pkl",
-        "category": "category_encoder.pkl",
-        "seat": "seat_encoder.pkl",
-        "target": "target_encoder.pkl"
-    }
-    
-    missing = [f for f in files.values() if not os.path.exists(f)]
-    if missing:
-        return None, missing
 
-    model = joblib.load(files["model"])
-    gender_enc = joblib.load(files["gender"])
-    category_enc = joblib.load(files["category"])
-    seat_enc = joblib.load(files["seat"])
-    target_enc = joblib.load(files["target"])
-    
+    if not os.path.exists(model_file):
+        return None, [model_file]
+
+    model = joblib.load(model_file)
+
+    # Check and generate encoders automatically if missing
+    encoder_files = ["gender_encoder.pkl", "category_encoder.pkl", "seat_encoder.pkl", "target_encoder.pkl"]
+    missing_encoders = [f for f in encoder_files if not os.path.exists(f)]
+
+    if missing_encoders and os.path.exists("CAP_Seat_Allocation_short.csv"):
+        df_csv = pd.read_csv("CAP_Seat_Allocation_short.csv")
+        df_csv.columns = df_csv.columns.str.strip()
+        df_csv["Target"] = df_csv["Institute Name"].astype(str) + " | " + df_csv["Course Name"].astype(str)
+
+        gender_enc = LabelEncoder().fit(df_csv["Gender"])
+        category_enc = LabelEncoder().fit(df_csv["Category"])
+        seat_enc = LabelEncoder().fit(df_csv["Seat Alloted"])
+        target_enc = LabelEncoder().fit(df_csv["Target"])
+
+        joblib.dump(gender_enc, "gender_encoder.pkl")
+        joblib.dump(category_enc, "category_encoder.pkl")
+        joblib.dump(seat_enc, "seat_encoder.pkl")
+        joblib.dump(target_enc, "target_encoder.pkl")
+    elif missing_encoders:
+        return None, missing_encoders
+
+    gender_enc = joblib.load("gender_encoder.pkl")
+    category_enc = joblib.load("category_encoder.pkl")
+    seat_enc = joblib.load("seat_encoder.pkl")
+    target_enc = joblib.load("target_encoder.pkl")
+
     return (model, gender_enc, category_enc, seat_enc, target_enc), []
 
 loaded_assets, missing_files = load_assets()
@@ -297,7 +311,7 @@ st.caption("Machine Learning powered engine for estimating MHT-CET institute and
 
 if missing_files:
     st.error(f"⚠️ Missing required model/encoder files in root directory: `{', '.join(missing_files)}`")
-    st.info("Ensure all `.pkl` files are placed inside the project directory.")
+    st.info("Ensure `collegename_model.pkl` and `CAP_Seat_Allocation_short.csv` are placed inside the project directory.")
     st.stop()
 
 tab1, tab2, tab3 = st.tabs(["🔮 AI Prediction Engine", "📊 Cutoff Explorer (20 - 100 Cutoffs)", "🌟 Recommendations"])
@@ -353,7 +367,7 @@ with tab1:
                         institute = prediction_str
                         course = "General Engineering Department"
 
-                    # Fallback lookup for predicted cutoff
+                    # Lookup cutoff range for predicted college
                     match = [x for x in FULL_CUTOFF_DATABASE if x["Institute"] in institute or institute in x["Institute"]]
                     p_min, p_max, p_avg = (match[0]["Min_Cutoff"], match[0]["Max_Cutoff"], match[0]["Avg_Cutoff"]) if match else (99.50, 100.00, 99.70)
 
@@ -390,11 +404,11 @@ with tab1:
                     st.error(f"An unexpected error occurred during prediction: {str(e)}")
 
 # -----------------------------------------------------------------------------
-# TAB 2: CUTOFF EXPLORER (20.0 TO 100.0 PERCENTILE RANGE)
+# TAB 2: CUTOFF EXPLORER (20.0 TO 100.0 PERCENTILE RANGE FILTER)
 # -----------------------------------------------------------------------------
 with tab2:
     st.subheader("📊 College Cutoffs (Ordered Lowest to Highest Cutoff)")
-    
+
     col_pct1, col_pct2 = st.columns([2, 1])
     with col_pct1:
         pct_range = st.slider(
@@ -408,8 +422,7 @@ with tab2:
         search_query = st.text_input("🔍 Search College/Course Name", value="")
 
     df_full = pd.DataFrame(FULL_CUTOFF_DATABASE)
-    
-    # Filter by range slider and search query
+
     filtered = df_full[
         (df_full["Min_Cutoff"] <= pct_range[1]) &
         (df_full["Max_Cutoff"] >= pct_range[0])
@@ -421,7 +434,7 @@ with tab2:
             filtered["Course"].str.contains(search_query, case=False, na=False)
         ]
 
-    # Sort from Lowest to Highest Min Cutoff %ile
+    # Sort explicitly from lowest to highest Min Cutoff %ile
     filtered = filtered.sort_values(by=["Min_Cutoff", "Avg_Cutoff"], ascending=[True, True])
 
     if not filtered.empty:
@@ -438,10 +451,10 @@ with tab2:
 # -----------------------------------------------------------------------------
 with tab3:
     st.subheader(f"🌟 Eligible Colleges for Percentile: {percentile:.2f}%")
-    
+
     df_full = pd.DataFrame(FULL_CUTOFF_DATABASE)
     eligible = df_full[df_full['Min_Cutoff'] <= percentile]
-    
+
     if not eligible.empty:
         eligible = eligible.sort_values(by='Min_Cutoff', ascending=True)
         st.dataframe(eligible.style.format({
